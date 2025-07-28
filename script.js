@@ -1,16 +1,18 @@
-// Theme Management
+// Gestión del tema (claro/oscuro)
 class ThemeManager {
     constructor() {
+        // Lee el tema guardado en localStorage
         this.isDarkMode = localStorage.getItem('theme') === 'dark';
         this.init();
     }
 
     init() {
-        this.updateTheme();
-        this.bindEvents();
+        this.updateTheme(); // Aplica el tema al cargar
+        this.bindEvents();  // Asocia eventos a los botones de tema
     }
 
     bindEvents() {
+        // Botones para cambiar el tema en móvil y escritorio
         const mobileThemeBtn = document.getElementById('mobile-theme-btn');
         const desktopThemeBtn = document.getElementById('desktop-theme-btn');
 
@@ -19,12 +21,14 @@ class ThemeManager {
     }
 
     toggleTheme() {
+        // Cambia entre modo claro y oscuro y lo guarda
         this.isDarkMode = !this.isDarkMode;
         this.updateTheme();
         localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
     }
 
     updateTheme() {
+        // Aplica la clase 'dark' al body si corresponde
         if (this.isDarkMode) {
             document.body.classList.add('dark');
         } else {
@@ -33,20 +37,20 @@ class ThemeManager {
     }
 }
 
-// Navigation Management
+// Gestión de la navegación entre páginas/modelos
 class NavigationManager {
     constructor() {
-        this.currentPage = 'home';
+        this.currentPage = 'home'; // Página inicial
         this.init();
     }
 
     init() {
-        this.bindEvents();
-        this.showPage(this.currentPage);
+        this.bindEvents(); // Asocia eventos a la navegación
+        this.showPage(this.currentPage); // Muestra la página inicial
     }
 
     bindEvents() {
-        // Mobile menu
+        // Botones y elementos para abrir/cerrar el menú lateral en móvil
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
         const overlay = document.getElementById('overlay');
@@ -56,7 +60,7 @@ class NavigationManager {
         sidebarCloseBtn.addEventListener('click', () => this.closeSidebar());
         overlay.addEventListener('click', () => this.closeSidebar());
 
-        // Navigation items
+        // Botones de navegación entre modelos
         const navItems = document.querySelectorAll('.nav-item');
         navItems.forEach(item => {
             item.addEventListener('click', (e) => {
@@ -68,33 +72,35 @@ class NavigationManager {
     }
 
     openSidebar() {
+        // Abre el menú lateral y muestra el overlay
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
-        
+       
         sidebar.classList.add('open');
         overlay.classList.add('active');
     }
 
     closeSidebar() {
+        // Cierra el menú lateral y oculta el overlay
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
-        
+       
         sidebar.classList.remove('open');
         overlay.classList.remove('active');
     }
 
     navigateTo(page) {
+        // Cambia de página/modelo
         this.currentPage = page;
         this.showPage(page);
         this.updateActiveNavItem(page);
     }
 
     showPage(page) {
-        // Hide all pages
+        // Oculta todas las páginas y muestra la seleccionada
         const pages = document.querySelectorAll('.page');
         pages.forEach(p => p.classList.remove('active'));
-
-        // Show selected page
+       
         const targetPage = document.getElementById(`${page}-page`);
         if (targetPage) {
             targetPage.classList.add('active');
@@ -102,6 +108,7 @@ class NavigationManager {
     }
 
     updateActiveNavItem(page) {
+        // Actualiza el botón activo en la barra lateral
         const navItems = document.querySelectorAll('.nav-item');
         navItems.forEach(item => {
             item.classList.remove('active');
@@ -112,8 +119,9 @@ class NavigationManager {
     }
 }
 
-// Queue Calculations
+// Cálculos de los modelos de colas
 class QueueCalculations {
+    // Modelo M/M/1
     static calculateMM1({ lambda, mu }) {
         if (lambda >= mu) {
             throw new Error('El sistema es inestable: λ debe ser menor que μ');
@@ -125,10 +133,11 @@ class QueueCalculations {
         const Lq = (rho * rho) / (1 - rho);
         const W = 1 / (mu - lambda);
         const Wq = rho / (mu - lambda);
-
+     
         return { rho, P0, L, Lq, W, Wq };
     }
 
+    // Modelo M/M/2
     static calculateMM2({ lambda, mu }) {
         if (lambda >= 2 * mu) {
             throw new Error('El sistema es inestable: λ debe ser menor que 2μ');
@@ -136,27 +145,28 @@ class QueueCalculations {
 
         const rho = lambda / mu;
         const P0 = 1 / (1 + rho + (rho * rho) / (2 - rho));
-        
+       
         const Lq = (rho * rho * rho * P0) / (2 * (2 - rho) * (2 - rho));
         const L = Lq + rho;
         const Wq = Lq / lambda;
         const W = L / lambda;
-
+       
         return { rho, P0, L, Lq, W, Wq };
     }
 
+    // Modelo M/M/1/N (capacidad finita)
     static calculateMM1N({ lambda, mu, N }) {
         const rho = lambda / mu;
-        
+       
         let P0;
         if (rho === 1) {
             P0 = 1 / (N + 1);
         } else {
             P0 = (1 - rho) / (1 - Math.pow(rho, N + 1));
         }
-
+       
         const lambdaEff = lambda * (1 - Math.pow(rho, N) * P0);
-        
+       
         let L;
         if (rho === 1) {
             L = N / 2;
@@ -164,59 +174,61 @@ class QueueCalculations {
             L = (rho * (1 - (N + 1) * Math.pow(rho, N) + N * Math.pow(rho, N + 1))) / 
                 ((1 - rho) * (1 - Math.pow(rho, N + 1)));
         }
-
+       
         const Lq = L - (lambdaEff / mu);
         const W = L / lambdaEff;
         const Wq = Lq / lambdaEff;
-
+       
         return { rho, P0, L, Lq, W, Wq, lambdaEff };
     }
 
+    // Modelo M/G/1 (servicio general)
     static calculateMG1({ lambda, mu, sigma2 }) {
         if (lambda >= mu) {
             throw new Error('El sistema es inestable: λ debe ser menor que μ');
         }
-
+        
         const rho = lambda / mu;
         const P0 = 1 - rho;
-        
+       
         const Lq = (lambda * lambda * sigma2 + rho * rho) / (2 * (1 - rho));
         const L = Lq + rho;
         const Wq = Lq / lambda;
         const W = L / lambda;
-
+       
         return { rho, P0, L, Lq, W, Wq };
     }
 
+    // Modelo M/D/1 (servicio determinístico)
     static calculateMD1({ lambda, mu }) {
         if (lambda >= mu) {
             throw new Error('El sistema es inestable: λ debe ser menor que μ');
         }
-
+       
         const rho = lambda / mu;
         const P0 = 1 - rho;
-        
+       
         const Lq = (rho * rho) / (2 * (1 - rho));
         const L = Lq + rho;
         const Wq = Lq / lambda;
         const W = L / lambda;
-
+       
         return { rho, P0, L, Lq, W, Wq };
     }
 }
 
-// Calculator Management
+// Gestión de la calculadora y formularios
 class CalculatorManager {
     constructor() {
         this.init();
     }
 
     init() {
-        this.bindEvents();
+        this.bindEvents(); // Asocia eventos a los formularios
     }
 
     bindEvents() {
-        // Bind form submissions
+        // Para cada modelo, asocia el evento submit del formulario
         const forms = ['mm1', 'mm2', 'mm1n', 'mg1', 'md1'];
         forms.forEach(model => {
             const form = document.getElementById(`${model}-form`);
@@ -227,12 +239,12 @@ class CalculatorManager {
     }
 
     handleFormSubmit(e, model) {
-        e.preventDefault();
-        
+        e.preventDefault(); // Evita recargar la página
         try {
+            // Lee los datos del formulario y los convierte a números
             const formData = new FormData(e.target);
             const inputs = {};
-            
+           
             for (let [key, value] of formData.entries()) {
                 const numValue = parseFloat(value);
                 if (isNaN(numValue) || numValue <= 0) {
@@ -241,6 +253,7 @@ class CalculatorManager {
                 inputs[key] = numValue;
             }
 
+            // Llama al cálculo correspondiente según el modelo
             let results;
             switch (model) {
                 case 'mm1':
@@ -262,21 +275,23 @@ class CalculatorManager {
                     throw new Error('Modelo no reconocido');
             }
 
-            this.displayResults(model, results);
-            this.hideError(model);
+            this.displayResults(model, results); // Muestra los resultados
+            this.hideError(model);               // Oculta errores previos
 
         } catch (error) {
-            this.showError(model, error.message);
-            this.hideResults(model);
+            this.showError(model, error.message); // Muestra el error
+            this.hideResults(model);              // Oculta resultados previos
         }
     }
 
     displayResults(model, results) {
+        // Muestra los resultados en la sección correspondiente
         const resultsSection = document.getElementById(`${model}-results`);
         const resultsGrid = document.getElementById(`${model}-results-grid`);
-        
+      
         if (!resultsSection || !resultsGrid) return;
 
+        // Etiquetas para cada métrica
         const labels = {
             rho: 'Factor de utilización (ρ)',
             P0: 'Probabilidad de sistema vacío (P₀)',
@@ -288,18 +303,19 @@ class CalculatorManager {
         };
 
         resultsGrid.innerHTML = '';
-
+       
         Object.entries(results).forEach(([key, value]) => {
+          
             if (typeof value === 'function') return;
 
             const resultCard = document.createElement('div');
             resultCard.className = 'result-card';
-            
+          
             resultCard.innerHTML = `
                 <div class="result-label">${labels[key] || key}</div>
                 <div class="result-value">${this.formatNumber(value)}</div>
             `;
-            
+          
             resultsGrid.appendChild(resultCard);
         });
 
@@ -307,6 +323,7 @@ class CalculatorManager {
     }
 
     hideResults(model) {
+        // Oculta la sección de resultados
         const resultsSection = document.getElementById(`${model}-results`);
         if (resultsSection) {
             resultsSection.style.display = 'none';
@@ -314,6 +331,7 @@ class CalculatorManager {
     }
 
     showError(model, message) {
+        // Muestra un mensaje de error en el formulario
         const errorElement = document.getElementById(`${model}-error`);
         if (errorElement) {
             errorElement.textContent = message;
@@ -322,6 +340,7 @@ class CalculatorManager {
     }
 
     hideError(model) {
+        // Oculta el mensaje de error
         const errorElement = document.getElementById(`${model}-error`);
         if (errorElement) {
             errorElement.classList.remove('show');
@@ -329,11 +348,12 @@ class CalculatorManager {
     }
 
     formatNumber(num) {
+        // Formatea los números a 6 decimales
         return num.toFixed(6);
     }
 }
 
-// Initialize Application
+// Inicializa la aplicación cuando el DOM está listo
 document.addEventListener('DOMContentLoaded', () => {
     new ThemeManager();
     new NavigationManager();
