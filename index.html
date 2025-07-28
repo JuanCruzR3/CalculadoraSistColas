@@ -4,25 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora Teoría de Colas</title>
+    <!-- Enlace a la hoja de estilos principal -->
     <link rel="stylesheet" href="styles.css">
+    <!-- Iconos Lucide para los SVG -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.344.0/lucide.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="app">
-        <!-- Mobile Header -->
+        <!-- Encabezado para móviles -->
         <header class="mobile-header">
             <div class="mobile-header-content">
                 <div class="mobile-header-left">
+                    <!-- Botón para abrir el menú lateral en móviles -->
                     <button id="mobile-menu-btn" class="mobile-menu-btn">
+                        <!-- Icono de menú hamburguesa -->
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="3" y1="6" x2="21" y2="6"></line>
                             <line x1="3" y1="12" x2="21" y2="12"></line>
                             <line x1="3" y1="18" x2="21" y2="18"></line>
                         </svg>
                     </button>
+                    <!-- Título en versión móvil -->
                     <h1 class="mobile-title">Calculadora Teoría de Colas</h1>
                 </div>
+                <!-- Botón para cambiar el tema (claro/oscuro) en móvil -->
                 <button id="mobile-theme-btn" class="theme-btn">
+                    <!-- Icono de sol (modo claro) -->
                     <svg class="theme-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="5"></circle>
                         <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -34,6 +41,7 @@
                         <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
+                    <!-- Icono de luna (modo oscuro) -->
                     <svg class="theme-icon moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
@@ -41,11 +49,13 @@
             </div>
         </header>
 
-        <!-- Sidebar -->
+        <!-- Barra lateral (sidebar) para navegación principal -->
         <div id="sidebar" class="sidebar">
             <div class="sidebar-header">
                 <h1 class="sidebar-title">Calculadora Teoría de Colas</h1>
+                <!-- Botón para cerrar el sidebar en móviles -->
                 <button id="sidebar-close-btn" class="sidebar-close-btn">
+                    <!-- Icono de cerrar (X) -->
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -53,8 +63,10 @@
                 </button>
             </div>
             
+            <!-- Navegación entre páginas/modelos -->
             <nav class="sidebar-nav">
                 <div class="nav-items">
+                    <!-- Botones para cambiar entre las distintas páginas de la app -->
                     <button class="nav-item active" data-page="home">Inicio</button>
                     <button class="nav-item" data-page="mm1">M/M/1</button>
                     <button class="nav-item" data-page="mm2">M/M/2</button>
@@ -65,7 +77,9 @@
             </nav>
 
             <div class="sidebar-footer">
+                <!-- Botón para cambiar el tema en escritorio -->
                 <button id="desktop-theme-btn" class="desktop-theme-btn">
+                    <!-- Iconos de sol y luna -->
                     <svg class="theme-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="5"></circle>
                         <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -85,49 +99,50 @@
             </div>
         </div>
 
-        <!-- Overlay -->
+        <!-- Overlay para oscurecer el fondo cuando el sidebar está abierto en móvil -->
         <div id="overlay" class="overlay"></div>
 
-        <!-- Main Content -->
+        <!-- Contenido principal de la aplicación -->
         <main id="main-content" class="main-content">
-            <!-- Home Page -->
+            <!-- Página de inicio -->
             <div id="home-page" class="page active">
                 <div class="page-container">
                     <div class="content-card">
                         <h1 class="page-title">Teoría de Colas</h1>
                         
                         <div class="content-text">
-                            <p>Este proyecto fue desarrollado por Juan Cruz Rodriguez, estudiante de carrera Ingeniería en Sistemas de Información en la Universidad Abierta Interamericana.</p>
-                            
+                            <!-- Descripción y créditos del proyecto -->
+                            <p>Este proyecto fue desarrollado por Juan Cruz Rodriguez, estudiante de Ingeniería en Sistemas de Información en la Universidad Abierta Interamericana.</p>
+
                             <p>El objetivo de este proyecto es simular un sistema de colas, para poder analizar y estudiar el comportamiento de los sistemas de espera.</p>
-                            
+
                             <p>La Teoría de Colas es una rama de las matemáticas que estudia la formación de líneas de espera, es decir, el estudio de los sistemas de espera.</p>
                         </div>
 
                         <div class="models-section">
                             <h2 class="models-title">Modelos Disponibles</h2>
-                            
+                            <!-- Tarjetas con los modelos de colas disponibles -->
                             <div class="models-grid">
                                 <div class="model-card">
                                     <h3>M/M/1</h3>
                                     <p>Sistema con un servidor, llegadas Poisson y servicio exponencial.</p>
                                 </div>
-                                
+
                                 <div class="model-card">
                                     <h3>M/M/2</h3>
                                     <p>Sistema con dos servidores en paralelo, llegadas Poisson y servicio exponencial.</p>
                                 </div>
-                                
+
                                 <div class="model-card">
                                     <h3>M/M/1/N</h3>
                                     <p>Sistema M/M/1 con capacidad limitada a N clientes.</p>
                                 </div>
-                                
+
                                 <div class="model-card">
                                     <h3>M/G/1</h3>
                                     <p>Sistema con un servidor, llegadas Poisson y distribución general de servicio.</p>
                                 </div>
-                                
+
                                 <div class="model-card">
                                     <h3>M/D/1</h3>
                                     <p>Sistema con un servidor, llegadas Poisson y servicio determinístico.</p>
@@ -138,7 +153,7 @@
                 </div>
             </div>
 
-            <!-- Calculator Pages -->
+            <!-- Página de calculadora para M/M/1 -->
             <div id="mm1-page" class="page calculator-page">
                 <div class="page-container">
                     <div class="calculator-grid">
@@ -146,8 +161,8 @@
                             <h1 class="calculator-title">M/M/1</h1>
                             <p class="calculator-description">El modelo M/M/1 es un modelo de colas que se caracteriza por tener un solo servidor y una sola fila de espera. La distribución de llegadas y de servicio son de tipo exponencial.</p>
                         </div>
-
                         <div class="form-card">
+                            <!-- Formulario para ingresar los parámetros del modelo -->
                             <form id="mm1-form" class="calculator-form">
                                 <div class="input-group">
                                     <label>Tasa de arribos (λ)*</label>
@@ -162,7 +177,7 @@
                             </form>
                         </div>
                     </div>
-
+                    <!-- Sección para mostrar los resultados del cálculo -->
                     <div id="mm1-results" class="results-section" style="display: none;">
                         <h2 class="results-title">Resultados</h2>
                         <div class="results-grid" id="mm1-results-grid"></div>
@@ -170,6 +185,7 @@
                 </div>
             </div>
 
+            <!-- Página de calculadora para M/M/2 -->
             <div id="mm2-page" class="page calculator-page">
                 <div class="page-container">
                     <div class="calculator-grid">
@@ -177,7 +193,6 @@
                             <h1 class="calculator-title">M/M/2</h1>
                             <p class="calculator-description">El modelo M/M/2 es un sistema con dos servidores en paralelo. Los clientes llegan según un proceso de Poisson y el tiempo de servicio de cada servidor sigue una distribución exponencial.</p>
                         </div>
-
                         <div class="form-card">
                             <form id="mm2-form" class="calculator-form">
                                 <div class="input-group">
@@ -193,7 +208,6 @@
                             </form>
                         </div>
                     </div>
-
                     <div id="mm2-results" class="results-section" style="display: none;">
                         <h2 class="results-title">Resultados</h2>
                         <div class="results-grid" id="mm2-results-grid"></div>
@@ -201,6 +215,7 @@
                 </div>
             </div>
 
+            <!-- Página de calculadora para M/M/1/N -->
             <div id="mm1n-page" class="page calculator-page">
                 <div class="page-container">
                     <div class="calculator-grid">
@@ -208,7 +223,6 @@
                             <h1 class="calculator-title">M/M/1/N</h1>
                             <p class="calculator-description">El modelo M/M/1/N es una variación del modelo M/M/1 con capacidad limitada. El sistema puede contener máximo N clientes (incluyendo el que está siendo atendido). Si llega un cliente cuando el sistema está lleno, es rechazado.</p>
                         </div>
-
                         <div class="form-card">
                             <form id="mm1n-form" class="calculator-form">
                                 <div class="input-group">
@@ -228,7 +242,6 @@
                             </form>
                         </div>
                     </div>
-
                     <div id="mm1n-results" class="results-section" style="display: none;">
                         <h2 class="results-title">Resultados</h2>
                         <div class="results-grid" id="mm1n-results-grid"></div>
@@ -236,6 +249,7 @@
                 </div>
             </div>
 
+            <!-- Página de calculadora para M/G/1 -->
             <div id="mg1-page" class="page calculator-page">
                 <div class="page-container">
                     <div class="calculator-grid">
@@ -243,7 +257,6 @@
                             <h1 class="calculator-title">M/G/1</h1>
                             <p class="calculator-description">El modelo M/G/1 tiene llegadas Poisson pero el tiempo de servicio sigue una distribución general. Este modelo utiliza la fórmula de Pollaczek-Khinchine para calcular las métricas del sistema.</p>
                         </div>
-
                         <div class="form-card">
                             <form id="mg1-form" class="calculator-form">
                                 <div class="input-group">
@@ -263,7 +276,6 @@
                             </form>
                         </div>
                     </div>
-
                     <div id="mg1-results" class="results-section" style="display: none;">
                         <h2 class="results-title">Resultados</h2>
                         <div class="results-grid" id="mg1-results-grid"></div>
@@ -271,6 +283,7 @@
                 </div>
             </div>
 
+            <!-- Página de calculadora para M/D/1 -->
             <div id="md1-page" class="page calculator-page">
                 <div class="page-container">
                     <div class="calculator-grid">
@@ -278,7 +291,6 @@
                             <h1 class="calculator-title">M/D/1</h1>
                             <p class="calculator-description">El modelo M/D/1 tiene llegadas Poisson y tiempo de servicio determinístico (constante). Este es un caso especial del modelo M/G/1 donde la varianza del tiempo de servicio es cero.</p>
                         </div>
-
                         <div class="form-card">
                             <form id="md1-form" class="calculator-form">
                                 <div class="input-group">
@@ -294,7 +306,6 @@
                             </form>
                         </div>
                     </div>
-
                     <div id="md1-results" class="results-section" style="display: none;">
                         <h2 class="results-title">Resultados</h2>
                         <div class="results-grid" id="md1-results-grid"></div>
@@ -304,6 +315,7 @@
         </main>
     </div>
 
+    <!-- Script principal de la aplicación -->
     <script src="script.js"></script>
 </body>
 </html>
