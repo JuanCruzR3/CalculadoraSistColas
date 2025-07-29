@@ -185,7 +185,7 @@ class QueueCalculations {
     }
 
     // Modelo M/G/1 (servicio general)
-    static calculateMG1({ lambda, mu, pax, pn }) {
+    static calculateMG1({ lambda, mu, sigma, pax, pn }) {
         if (lambda >= mu) {
             throw new Error('El sistema es inestable: λ debe ser menor que μ');
         }
@@ -193,8 +193,12 @@ class QueueCalculations {
         const rho = lambda / mu;
         const P0 = 1 - rho;
        
-        // Para M/G/1 sin varianza específica, usamos la fórmula básica
-        const Lq = (rho * rho) / (2 * (1 - rho));
+        // Para M/G/1 usamos la fórmula de Pollaczek-Khinchine
+        // Si no se proporciona sigma, asumimos distribución exponencial (sigma = 1/mu)
+        const sigmaValue = sigma !== null && sigma !== undefined && sigma !== '' ? sigma : (1 / mu);
+        const variance = sigmaValue * sigmaValue;
+        
+        const Lq = (lambda * lambda * variance + rho * rho) / (2 * (1 - rho));
         const L = Lq + rho;
         const Wq = Lq / lambda;
         const W = L / lambda;
