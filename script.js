@@ -137,23 +137,40 @@ class QueueCalculations {
         return { rho, P0, L, Lq, W, Wq };
     }
 
-    // Modelo M/M/2
-    static calculateMM2({ lambda, mu }) {
-        if (lambda >= 2 * mu1) {
-            throw new Error('El sistema es inestable: λ debe ser menor que 2μ1');
+    // Modelo M/M/2 
+    static calculateMM2Updated({ lambda, mu1, mu2, pn }) {
+        const muTotal = mu1 + mu2;
+        if (lambda >= muTotal) {
+            throw new Error('El sistema es inestable: λ debe ser menor que μ1 + μ2');
         }
 
-        const rho1 = lambda / mu1;
-        const rho2 = lambda / mu2;
-        const rho = (rho1 + rho2) / 2; // Promedio para compatibilidad
+        const rho = lambda / muTotal;
         const P0 = 1 / (1 + rho + (rho * rho) / (2 - rho));
        
         const Lq = (rho * rho * rho * P0) / (2 * (2 - rho) * (2 - rho));
         const L = Lq + rho;
         const Wq = Lq / lambda;
         const W = L / lambda;
-       
-        return { rho, P0, L, Lq, W, Wq };
+
+        let results = { rho, P0, L, Lq, W, Wq };
+
+        // Calcular Pn si se proporciona
+        if (pn !== undefined && pn !== null && pn !== '') {
+            const n = parseInt(pn);
+            if (!isNaN(n) && n >= 0) {
+                let PnValue;
+                if (n === 0) {
+                    PnValue = P0;
+                } else if (n === 1) {
+                    PnValue = rho * P0;
+                } else {
+                    PnValue = (Math.pow(rho, n) / Math.pow(2, n - 1)) * P0;
+                }
+                results.PnValue = PnValue;
+            }
+        }
+
+        return results;
     }
 
     // Modelo M/M/1/N (capacidad finita)
@@ -322,68 +339,70 @@ class CalculatorManager {
     }
 
     handleFormSubmit(e, model) {
-        e.preventDefault(); // Evita recargar la página
-        try {
-            // Lee los datos del formulario y los convierte a números
-            const formData = new FormData(e.target);
-            const inputs = {};
-           
-            for (let [key, value] of formData.entries()) {
-                // Solo validar campos requeridos
-                if (value.trim() !== '') {
-                    const numValue = parseFloat(value);
-                    if (isNaN(numValue) || numValue < 0) {
-                        throw new Error(`Por favor ingrese un valor válido para ${key}`);
-                    }
-                    inputs[key] = numValue;
-                } else {
-                    // Para campos opcionales, asignar null
-                    inputs[key] = null;
+           e.preventDefault(); // Evita recargar la página
+    try {
+        // Lee los datos del formulario y los convierte a números
+        const formData = new FormData(e.target);
+        const inputs = {};
+       
+        for (let [key, value] of formData.entries()) {
+            // Solo validar campos requeridos
+            if (value.trim() !== '') {
+                const numValue = parseFloat(value);
+                if (isNaN(numValue) || numValue < 0) {
+                    throw new Error(`Por favor ingrese un valor válido para ${key}`);
                 }
+                inputs[key] = numValue;
+            } else {
+                // Para campos opcionales, asignar null
+                inputs[key] = null;
             }
-
-            // Validar campos obligatorios
-            if (!inputs.lambda || inputs.lambda <= 0) {
-                throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
-            }
-            if (!inputs.mu || inputs.mu <= 0) {
-                throw new Error('El tiempo de servicio (μ) es obligatorio y debe ser mayor que 0');
-            }
-            if (model === 'mm2' && (!inputs.mu1 || inputs.mu1 <= 0 || !inputs.mu2 || inputs.mu2 <= 0)) {
-                throw new Error('Los tiempos de servicio μ1 y μ2 son obligatorios y deben ser mayores que 0');
-            }
-            if (model === 'mm1n' && (!inputs.N || inputs.N <= 0)) {
-                throw new Error('La capacidad máxima (N) es obligatoria y debe ser mayor que 0');
-            }
-            // Llama al cálculo correspondiente según el modelo
-            let results;
-            switch (model) {
-                case 'mm1':
-                    results = QueueCalculations.calculateMM1Updated(inputs);
-                    break;
-                case 'mm2':
-                    results = QueueCalculations.calculateMM2Updated(inputs);
-                    break;
-                case 'mm1n':
-                    results = QueueCalculations.calculateMM1N(inputs);
-                    break;
-                case 'mg1':
-                    results = QueueCalculations.calculateMG1(inputs);
-                    break;
-                case 'md1':
-                    results = QueueCalculations.calculateMD1(inputs);
-                    break;
-                default:
-                    throw new Error('Modelo no reconocido');
-            }
-
-            this.displayResults(model, results); // Muestra los resultados
-            this.hideError(model);               // Oculta errores previos
-
-        } catch (error) {
-            this.showError(model, error.message); // Muestra el error
-            this.hideResults(model);              // Oculta resultados previos
         }
+
+        // Validar campos obligatorios
+        if (!inputs.lambda || inputs.lambda <= 0) {
+            throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
+        }
+        // Validación para modelos excepto mm2
+        if (model !== 'mm2' && (!inputs.mu || inputs.mu <= 0)) {
+            throw new Error('El tiempo de servicio (μ) es obligatorio y debe ser mayor que 0');
+        }
+        // Validación específica para mm2
+        if (model === 'mm2' && (!inputs.mu1 || inputs.mu1 <= 0 || !inputs.mu2 || inputs.mu2 <= 0)) {
+            throw new Error('Los tiempos de servicio μ1 y μ2 son obligatorios y deben ser mayores que 0');
+        }
+        if (model === 'mm1n' && (!inputs.N || inputs.N <= 0)) {
+            throw new Error('La capacidad máxima (N) es obligatoria y debe ser mayor que 0');
+        }
+        // Llama al cálculo correspondiente según el modelo
+        let results;
+        switch (model) {
+            case 'mm1':
+                results = QueueCalculations.calculateMM1Updated(inputs);
+                break;
+            case 'mm2':
+                results = QueueCalculations.calculateMM2Updated(inputs);
+                break;
+            case 'mm1n':
+                results = QueueCalculations.calculateMM1N(inputs);
+                break;
+            case 'mg1':
+                results = QueueCalculations.calculateMG1(inputs);
+                break;
+            case 'md1':
+                results = QueueCalculations.calculateMD1(inputs);
+                break;
+            default:
+                throw new Error('Modelo no reconocido');
+        }
+
+        this.displayResults(model, results); // Muestra los resultados
+        this.hideError(model);               // Oculta errores previos
+
+    } catch (error) {
+        this.showError(model, error.message); // Muestra el error
+        this.hideResults(model);              // Oculta resultados previos
+    }
     }
 
     displayResults(model, results) {
