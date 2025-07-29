@@ -1,0 +1,18 @@
+{
+  "name": "calculadorasistcolas",
+  "version": "1.0.0",
+  "description": "Calculadora de Teoría de Colas - Una aplicación web para calcular métricas de sistemas de colas",
+  "main": "script.js",
+  "scripts": {
+    "start": "echo 'Esta es una aplicación del lado del cliente. Abre index.html en tu navegador.'",
+    "dev": "echo 'Para desarrollo, abre index.html directamente en tu navegador o usa un servidor local.'"
+  },
+  "keywords": [
+    "queue-theory",
+    "calculator",
+    "mathematics",
+    "operations-research"
+  ],
+  "author": "Juan Cruz Rodriguez",
+  "license": "MIT"
+}
