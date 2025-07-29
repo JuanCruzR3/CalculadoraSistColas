@@ -387,12 +387,38 @@ class CalculatorManager {
     }
 
     displayResults(model, results) {
-        // Muestra los resultados en la sección correspondiente
-        const resultsSection = document.getElementById(`${model}-results`);
-        const resultsGrid = document.getElementById(`${model}-results-grid`);
-      
-        if (!resultsSection || !resultsGrid) return;
-    }
+    // Muestra los resultados en la sección correspondiente
+    const resultsSection = document.getElementById(`${model}-results`);
+    const resultsGrid = document.getElementById(`${model}-results-grid`);
+    if (!resultsSection || !resultsGrid) return;
+
+    // Etiquetas para cada métrica
+    const labels = {
+        rho: 'Factor de utilización (ρ)',
+        P0: 'Probabilidad de sistema vacío (P₀)',
+        L: 'Número promedio de clientes en el sistema (L)',
+        Lq: 'Número promedio de clientes en cola (Lq)',
+        W: 'Tiempo promedio en el sistema (W)',
+        Wq: 'Tiempo promedio en cola (Wq)',
+        lambdaEff: 'Tasa efectiva de llegadas (λₑ)',
+        PaxValue: 'Probabilidad de al menos x clientes (Pax)',
+        PnValue: 'Probabilidad de n clientes (Pn)',
+    };
+
+    resultsGrid.innerHTML = '';
+    Object.entries(results).forEach(([key, value]) => {
+        if (typeof value === 'function') return;
+        const resultCard = document.createElement('div');
+        resultCard.className = 'result-card';
+        resultCard.innerHTML = `
+            <div class="result-label">${labels[key] || key}</div>
+            <div class="result-value">${this.formatNumber(value)}</div>
+        `;
+        resultsGrid.appendChild(resultCard);
+    });
+
+    resultsSection.style.display = 'block';
+    } 
 
     // Modelo M/M/2 actualizado
     static calculateMM2Updated({ lambda, mu1, mu2, pn }) {
