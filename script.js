@@ -325,6 +325,7 @@ class CalculatorManager {
 
     init() {
         this.bindEvents(); // Asocia eventos a los formularios
+        this.bindNavClear(); // Limpia formularios y resultados al cambiar de pestaña 
     }
 
     bindEvents() {
@@ -335,6 +336,31 @@ class CalculatorManager {
             if (form) {
                 form.addEventListener('submit', (e) => this.handleFormSubmit(e, model));
             }
+        });
+    }
+
+         // NUEVO: Limpia formularios y resultados al cambiar de pestaña
+    bindNavClear() {
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                this.clearAllFormsAndResults();
+            });
+        });
+    }
+
+    clearAllFormsAndResults() {
+        const forms = ['mm1', 'mm2', 'mm1n', 'mg1', 'md1'];
+        forms.forEach(model => {
+            // Limpiar campos de texto
+            const form = document.getElementById(`${model}-form`);
+            if (form) {
+                form.reset();
+            }
+            // Ocultar resultados
+            this.hideResults(model);
+            // Ocultar errores
+            this.hideError(model);
         });
     }
 
