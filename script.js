@@ -139,11 +139,13 @@ class QueueCalculations {
 
     // Modelo M/M/2
     static calculateMM2({ lambda, mu }) {
-        if (lambda >= 2 * mu) {
-            throw new Error('El sistema es inestable: λ debe ser menor que 2μ');
+        if (lambda >= 2 * mu1) {
+            throw new Error('El sistema es inestable: λ debe ser menor que 2μ1');
         }
 
-        const rho = lambda / mu;
+        const rho1 = lambda / mu1;
+        const rho2 = lambda / mu2;
+        const rho = (rho1 + rho2) / 2; // Promedio para compatibilidad
         const P0 = 1 / (1 + rho + (rho * rho) / (2 - rho));
        
         const Lq = (rho * rho * rho * P0) / (2 * (2 - rho) * (2 - rho));
@@ -183,7 +185,7 @@ class QueueCalculations {
     }
 
     // Modelo M/G/1 (servicio general)
-    static calculateMG1({ lambda, mu, sigma2 }) {
+    static calculateMG1({ lambda, mu, pax, pn }) {
         if (lambda >= mu) {
             throw new Error('El sistema es inestable: λ debe ser menor que μ');
         }
@@ -191,16 +193,37 @@ class QueueCalculations {
         const rho = lambda / mu;
         const P0 = 1 - rho;
        
-        const Lq = (lambda * lambda * sigma2 + rho * rho) / (2 * (1 - rho));
+        // Para M/G/1 sin varianza específica, usamos la fórmula básica
+        const Lq = (rho * rho) / (2 * (1 - rho));
         const L = Lq + rho;
         const Wq = Lq / lambda;
         const W = L / lambda;
        
-        return { rho, P0, L, Lq, W, Wq };
+        let results = { rho, P0, L, Lq, W, Wq };
+
+        // Calcular Pax si se proporciona
+        if (pax !== undefined && pax !== null && pax !== '') {
+            const x = parseInt(pax);
+            if (!isNaN(x) && x >= 0) {
+                const PaxValue = Math.pow(rho, x);
+                results.PaxValue = PaxValue;
+            }
+        }
+
+        // Calcular Pn si se proporciona
+        if (pn !== undefined && pn !== null && pn !== '') {
+            const n = parseInt(pn);
+            if (!isNaN(n) && n >= 0) {
+                const PnValue = Math.pow(rho, n) * P0;
+                results.PnValue = PnValue;
+            }
+        }
+
+        return results;
     }
 
     // Modelo M/D/1 (servicio determinístico)
-    static calculateMD1({ lambda, mu }) {
+    static calculateMD1({ lambda, mu, pax, pn }) {
         if (lambda >= mu) {
             throw new Error('El sistema es inestable: λ debe ser menor que μ');
         }
@@ -213,7 +236,63 @@ class QueueCalculations {
         const Wq = Lq / lambda;
         const W = L / lambda;
        
-        return { rho, P0, L, Lq, W, Wq };
+        let results = { rho, P0, L, Lq, W, Wq };
+
+        // Calcular Pax si se proporciona
+        if (pax !== undefined && pax !== null && pax !== '') {
+            const x = parseInt(pax);
+            if (!isNaN(x) && x >= 0) {
+                const PaxValue = Math.pow(rho, x);
+                results.PaxValue = PaxValue;
+            }
+        }
+
+        // Calcular Pn si se proporciona
+        if (pn !== undefined && pn !== null && pn !== '') {
+            const n = parseInt(pn);
+            if (!isNaN(n) && n >= 0) {
+                const PnValue = Math.pow(rho, n) * P0;
+                results.PnValue = PnValue;
+            }
+        }
+
+        return results;
+    }
+
+    // Modelo M/M/1 actualizado
+    static calculateMM1Updated({ lambda, mu, pax, pn }) {
+        if (lambda >= mu) {
+            throw new Error('El sistema es inestable: λ debe ser menor que μ');
+        }
+
+        const rho = lambda / mu;
+        const P0 = 1 - rho;
+        const L = rho / (1 - rho);
+        const Lq = (rho * rho) / (1 - rho);
+        const W = 1 / (mu - lambda);
+        const Wq = rho / (mu - lambda);
+     
+        let results = { rho, P0, L, Lq, W, Wq };
+
+        // Calcular Pax si se proporciona
+        if (pax !== undefined && pax !== null && pax !== '') {
+            const x = parseInt(pax);
+            if (!isNaN(x) && x >= 0) {
+                const PaxValue = Math.pow(rho, x);
+                results.PaxValue = PaxValue;
+            }
+        }
+
+        // Calcular Pn si se proporciona
+        if (pn !== undefined && pn !== null && pn !== '') {
+            const n = parseInt(pn);
+            if (!isNaN(n) && n >= 0) {
+                const PnValue = Math.pow(rho, n) * P0;
+                results.PnValue = PnValue;
+            }
+        }
+
+        return results;
     }
 }
 
@@ -246,21 +325,40 @@ class CalculatorManager {
             const inputs = {};
            
             for (let [key, value] of formData.entries()) {
-                const numValue = parseFloat(value);
-                if (isNaN(numValue) || numValue <= 0) {
-                    throw new Error(`Por favor ingrese un valor válido para ${key}`);
+                // Solo validar campos requeridos
+                if (value.trim() !== '') {
+                    const numValue = parseFloat(value);
+                    if (isNaN(numValue) || numValue < 0) {
+                        throw new Error(`Por favor ingrese un valor válido para ${key}`);
+                    }
+                    inputs[key] = numValue;
+                } else {
+                    // Para campos opcionales, asignar null
+                    inputs[key] = null;
                 }
-                inputs[key] = numValue;
             }
 
+            // Validar campos obligatorios
+            if (!inputs.lambda || inputs.lambda <= 0) {
+                throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
+            }
+            if (!inputs.mu || inputs.mu <= 0) {
+                throw new Error('El tiempo de servicio (μ) es obligatorio y debe ser mayor que 0');
+            }
+            if (model === 'mm2' && (!inputs.mu1 || inputs.mu1 <= 0 || !inputs.mu2 || inputs.mu2 <= 0)) {
+                throw new Error('Los tiempos de servicio μ1 y μ2 son obligatorios y deben ser mayores que 0');
+            }
+            if (model === 'mm1n' && (!inputs.N || inputs.N <= 0)) {
+                throw new Error('La capacidad máxima (N) es obligatoria y debe ser mayor que 0');
+            }
             // Llama al cálculo correspondiente según el modelo
             let results;
             switch (model) {
                 case 'mm1':
-                    results = QueueCalculations.calculateMM1(inputs);
+                    results = QueueCalculations.calculateMM1Updated(inputs);
                     break;
                 case 'mm2':
-                    results = QueueCalculations.calculateMM2(inputs);
+                    results = QueueCalculations.calculateMM2Updated(inputs);
                     break;
                 case 'mm1n':
                     results = QueueCalculations.calculateMM1N(inputs);
@@ -290,6 +388,42 @@ class CalculatorManager {
         const resultsGrid = document.getElementById(`${model}-results-grid`);
       
         if (!resultsSection || !resultsGrid) return;
+    }
+
+    // Modelo M/M/2 actualizado
+    static calculateMM2Updated({ lambda, mu1, mu2, pn }) {
+        const muTotal = mu1 + mu2;
+        if (lambda >= muTotal) {
+            throw new Error('El sistema es inestable: λ debe ser menor que μ1 + μ2');
+        }
+
+        const rho = lambda / muTotal;
+        const P0 = 1 / (1 + rho + (rho * rho) / (2 - rho));
+       
+        const Lq = (rho * rho * rho * P0) / (2 * (2 - rho) * (2 - rho));
+        const L = Lq + rho;
+        const Wq = Lq / lambda;
+        const W = L / lambda;
+
+        let results = { rho, P0, L, Lq, W, Wq };
+
+        // Calcular Pn si se proporciona
+        if (pn !== undefined && pn !== null && pn !== '') {
+            const n = parseInt(pn);
+            if (!isNaN(n) && n >= 0) {
+                let PnValue;
+                if (n === 0) {
+                    PnValue = P0;
+                } else if (n === 1) {
+                    PnValue = rho * P0;
+                } else {
+                    PnValue = (Math.pow(rho, n) / Math.pow(2, n - 1)) * P0;
+                }
+                results.PnValue = PnValue;
+            }
+        }
+
+        return results;
 
         // Etiquetas para cada métrica
         const labels = {
@@ -300,6 +434,8 @@ class CalculatorManager {
             W: 'Tiempo promedio en el sistema (W)',
             Wq: 'Tiempo promedio en cola (Wq)',
             lambdaEff: 'Tasa efectiva de llegadas (λₑ)',
+            PaxValue: 'Probabilidad de al menos x clientes (Pax)',
+            PnValue: 'Probabilidad de n clientes (Pn)',
         };
 
         resultsGrid.innerHTML = '';

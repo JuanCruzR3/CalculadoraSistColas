@@ -172,6 +172,14 @@
                                     <label>Tiempo de servicio (μ)*</label>
                                     <input type="number" name="mu" step="any" min="0" placeholder="Ingrese el tiempo de servicio" required>
                                 </div>
+                                <div class="input-group">
+                                    <label>Prob de que haya al menos x clientes en el sistema (Pax)</label>
+                                    <input type="number" name="pax" step="any" min="0" placeholder="Ingrese el valor de x (número entero)">
+                                </div>
+                                <div class="input-group">
+                                    <label>Prob. de que haya n clientes en el sistema (Pn)</label>
+                                    <input type="number" name="pn" step="any" min="0" placeholder="Ingrese el valor de n (número entero)">
+                                </div>
                                 <div class="error-message" id="mm1-error"></div>
                                 <button type="submit" class="calculate-btn">Calcular</button>
                             </form>
@@ -200,8 +208,16 @@
                                     <input type="number" name="lambda" step="any" min="0" placeholder="Ingrese la tasa de arribos" required>
                                 </div>
                                 <div class="input-group">
-                                    <label>Tiempo de servicio por servidor (μ)*</label>
-                                    <input type="number" name="mu" step="any" min="0" placeholder="Ingrese el tiempo de servicio" required>
+                                    <label>Tiempo de servicio 1 (igual o más rápido - μ1)*</label>
+                                    <input type="number" name="mu1" step="any" min="0" placeholder="Ingrese el tiempo de servicio 1" required>
+                                </div>
+                                <div class="input-group">
+                                    <label>Tiempo de servicio 2 (igual o más lento - μ2)*</label>
+                                    <input type="number" name="mu2" step="any" min="0" placeholder="Ingrese el tiempo de servicio 2" required>
+                                </div>
+                                <div class="input-group">
+                                    <label>Prob. de que haya n clientes en el sistema (Pn)</label>
+                                    <input type="number" name="pn" step="any" min="0" placeholder="Ingrese el valor de n (número entero)">
                                 </div>
                                 <div class="error-message" id="mm2-error"></div>
                                 <button type="submit" class="calculate-btn">Calcular</button>
@@ -234,8 +250,8 @@
                                     <input type="number" name="mu" step="any" min="0" placeholder="Ingrese el tiempo de servicio" required>
                                 </div>
                                 <div class="input-group">
-                                    <label>Capacidad máxima del sistema (N)*</label>
-                                    <input type="number" name="N" min="1" placeholder="Ingrese la capacidad máxima" required>
+                                    <label>Capacidad máxima (N)*</label>
+                                    <input type="number" name="N" min="1" placeholder="Ingrese la capacidad máxima (número entero)" required>
                                 </div>
                                 <div class="error-message" id="mm1n-error"></div>
                                 <button type="submit" class="calculate-btn">Calcular</button>
@@ -264,12 +280,16 @@
                                     <input type="number" name="lambda" step="any" min="0" placeholder="Ingrese la tasa de arribos" required>
                                 </div>
                                 <div class="input-group">
-                                    <label>Tasa de servicio promedio (μ)*</label>
-                                    <input type="number" name="mu" step="any" min="0" placeholder="Ingrese la tasa de servicio promedio" required>
+                                    <label>Tiempo de servicio (μ)*</label>
+                                    <input type="number" name="mu" step="any" min="0" placeholder="Ingrese el tiempo de servicio" required>
                                 </div>
                                 <div class="input-group">
-                                    <label>Varianza del tiempo de servicio (σ²)*</label>
-                                    <input type="number" name="sigma2" step="any" min="0" placeholder="Ingrese la varianza del tiempo de servicio" required>
+                                    <label>Prob de que haya al menos x clientes en el sistema (Pax)</label>
+                                    <input type="number" name="pax" step="any" min="0" placeholder="Ingrese el valor de x (número entero)">
+                                </div>
+                                <div class="input-group">
+                                    <label>Prob. de que haya n clientes en el sistema (Pn)</label>
+                                    <input type="number" name="pn" step="any" min="0" placeholder="Ingrese el valor de n (número entero)">
                                 </div>
                                 <div class="error-message" id="mg1-error"></div>
                                 <button type="submit" class="calculate-btn">Calcular</button>
@@ -298,8 +318,16 @@
                                     <input type="number" name="lambda" step="any" min="0" placeholder="Ingrese la tasa de arribos" required>
                                 </div>
                                 <div class="input-group">
-                                    <label>Tasa de servicio (μ)*</label>
-                                    <input type="number" name="mu" step="any" min="0" placeholder="Ingrese la tasa de servicio" required>
+                                    <label>Tiempo de servicio (μ)*</label>
+                                    <input type="number" name="mu" step="any" min="0" placeholder="Ingrese el tiempo de servicio" required>
+                                </div>
+                                <div class="input-group">
+                                    <label>Prob de que haya al menos x clientes en el sistema (Pax)</label>
+                                    <input type="number" name="pax" step="any" min="0" placeholder="Ingrese el valor de x (número entero)">
+                                </div>
+                                <div class="input-group">
+                                    <label>Prob. de que haya n clientes en el sistema (Pn)</label>
+                                    <input type="number" name="pn" step="any" min="0" placeholder="Ingrese el valor de n (número entero)">
                                 </div>
                                 <div class="error-message" id="md1-error"></div>
                                 <button type="submit" class="calculate-btn">Calcular</button>
