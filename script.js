@@ -326,6 +326,88 @@ class CalculatorManager {
     init() {
         this.bindEvents(); // Asocia eventos a los formularios
         this.bindNavClear(); // Limpia formularios y resultados al cambiar de pestaña 
+        this.initTimeConverters(); // Inicializa los conversores de tiempo
+    }
+
+    // Inicializa los conversores de tiempo para todos los modelos
+    initTimeConverters() {
+        const models = ['mm1', 'mm2', 'mm1n', 'mg1', 'md1'];
+        models.forEach(model => {
+            this.bindTimeConverter(model);
+        });
+    }
+
+    // Asocia eventos al conversor de tiempo de un modelo específico
+    bindTimeConverter(model) {
+        const valueInput = document.getElementById(`${model}-converter-value`);
+        const fromSelect = document.getElementById(`${model}-converter-from`);
+        const toSelect = document.getElementById(`${model}-converter-to`);
+        const resultSpan = document.getElementById(`${model}-converter-result`);
+
+        if (!valueInput || !fromSelect || !toSelect || !resultSpan) return;
+
+        const updateConversion = () => {
+            const value = parseFloat(valueInput.value);
+            if (isNaN(value) || value < 0) {
+                resultSpan.textContent = 'Resultado: -';
+                return;
+            }
+
+            const fromUnit = fromSelect.value;
+            const toUnit = toSelect.value;
+            const convertedValue = this.convertTime(value, fromUnit, toUnit);
+            
+            resultSpan.textContent = `Resultado: ${convertedValue.toFixed(6)} ${this.getUnitLabel(toUnit)}`;
+        };
+
+        valueInput.addEventListener('input', updateConversion);
+        fromSelect.addEventListener('change', updateConversion);
+        toSelect.addEventListener('change', updateConversion);
+    }
+
+    // Convierte tiempo entre diferentes unidades
+    convertTime(value, fromUnit, toUnit) {
+        // Primero convertir a segundos
+        let valueInSeconds;
+        switch (fromUnit) {
+            case 'seconds':
+                valueInSeconds = value;
+                break;
+            case 'minutes':
+                valueInSeconds = value * 60;
+                break;
+            case 'hours':
+                valueInSeconds = value * 3600;
+                break;
+            default:
+                valueInSeconds = value;
+        }
+
+        // Luego convertir de segundos a la unidad deseada
+        switch (toUnit) {
+            case 'seconds':
+                return valueInSeconds;
+            case 'minutes':
+                return valueInSeconds / 60;
+            case 'hours':
+                return valueInSeconds / 3600;
+            default:
+                return valueInSeconds;
+        }
+    }
+
+    // Obtiene la etiqueta de la unidad
+    getUnitLabel(unit) {
+        switch (unit) {
+            case 'seconds':
+                return 'segundos';
+            case 'minutes':
+                return 'minutos';
+            case 'hours':
+                return 'horas';
+            default:
+                return '';
+        }
     }
 
     bindEvents() {

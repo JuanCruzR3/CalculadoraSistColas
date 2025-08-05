@@ -161,6 +161,36 @@
                             <h1 class="calculator-title">M/M/1</h1>
                             <p class="calculator-description">El modelo M/M/1 es un modelo de colas que se caracteriza por tener un solo servidor y una sola fila de espera. La distribución de llegadas y de servicio son de tipo exponencial.</p>
                         </div>
+                        <div class="time-converter-card">
+                            <h3 class="converter-title">Conversor de Tiempo</h3>
+                            <div class="converter-form">
+                                <div class="converter-row">
+                                    <div class="converter-input-group">
+                                        <label>Valor</label>
+                                        <input type="number" id="mm1-converter-value" step="any" min="0" placeholder="Ingrese el valor">
+                                    </div>
+                                    <div class="converter-select-group">
+                                        <label>Convertir de</label>
+                                        <select id="mm1-converter-from">
+                                            <option value="seconds">Segundos</option>
+                                            <option value="minutes">Minutos</option>
+                                            <option value="hours">Horas</option>
+                                        </select>
+                                    </div>
+                                    <div class="converter-select-group">
+                                        <label>A</label>
+                                        <select id="mm1-converter-to">
+                                            <option value="seconds">Segundos</option>
+                                            <option value="minutes">Minutos</option>
+                                            <option value="hours">Horas</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="converter-result">
+                                    <span id="mm1-converter-result">Resultado: -</span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-card">
                             <!-- Formulario para ingresar los parámetros del modelo -->
                             <form id="mm1-form" class="calculator-form">
@@ -201,6 +231,36 @@
                             <h1 class="calculator-title">M/M/2</h1>
                             <p class="calculator-description">El modelo M/M/2 es un sistema con dos servidores en paralelo. Los clientes llegan según un proceso de Poisson y el tiempo de servicio de cada servidor sigue una distribución exponencial.</p>
                         </div>
+                        <div class="time-converter-card">
+                            <h3 class="converter-title">Conversor de Tiempo</h3>
+                            <div class="converter-form">
+                                <div class="converter-row">
+                                    <div class="converter-input-group">
+                                        <label>Valor</label>
+                                        <input type="number" id="mm2-converter-value" step="any" min="0" placeholder="Ingrese el valor">
+                                    </div>
+                                    <div class="converter-select-group">
+                                        <label>Convertir de</label>
+                                        <select id="mm2-converter-from">
+                                            <option value="seconds">Segundos</option>
+                                            <option value="minutes">Minutos</option>
+                                            <option value="hours">Horas</option>
+                                        </select>
+                                    </div>
+                                    <div class="converter-select-group">
+                                        <label>A</label>
+                                        <select id="mm2-converter-to">
+                                            <option value="seconds">Segundos</option>
+                                            <option value="minutes">Minutos</option>
+                                            <option value="hours">Horas</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="converter-result">
+                                    <span id="mm2-converter-result">Resultado: -</span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-card">
                             <form id="mm2-form" class="calculator-form">
                                 <div class="input-group">
@@ -239,6 +299,36 @@
                             <h1 class="calculator-title">M/M/1/N</h1>
                             <p class="calculator-description">El modelo M/M/1/N es una variación del modelo M/M/1 con capacidad limitada. El sistema puede contener máximo N clientes (incluyendo el que está siendo atendido). Si llega un cliente cuando el sistema está lleno, es rechazado.</p>
                         </div>
+                        <div class="time-converter-card">
+                            <h3 class="converter-title">Conversor de Tiempo</h3>
+                            <div class="converter-form">
+                                <div class="converter-row">
+                                    <div class="converter-input-group">
+                                        <label>Valor</label>
+                                        <input type="number" id="mm1n-converter-value" step="any" min="0" placeholder="Ingrese el valor">
+                                    </div>
+                                    <div class="converter-select-group">
+                                        <label>Convertir de</label>
+                                        <select id="mm1n-converter-from">
+                                            <option value="seconds">Segundos</option>
+                                            <option value="minutes">Minutos</option>
+                                            <option value="hours">Horas</option>
+                                        </select>
+                                    </div>
+                                    <div class="converter-select-group">
+                                        <label>A</label>
+                                        <select id="mm1n-converter-to">
+                                            <option value="seconds">Segundos</option>
+                                            <option value="minutes">Minutos</option>
+                                            <option value="hours">Horas</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="converter-result">
+                                    <span id="mm1n-converter-result">Resultado: -</span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-card">
                             <form id="mm1n-form" class="calculator-form">
                                 <div class="input-group">
@@ -272,6 +362,36 @@
                         <div class="info-card">
                             <h1 class="calculator-title">M/G/1</h1>
                             <p class="calculator-description">El modelo M/G/1 tiene llegadas Poisson pero el tiempo de servicio sigue una distribución general. Este modelo utiliza la fórmula de Pollaczek-Khinchine para calcular las métricas del sistema.</p>
+                        </div>
+                        <div class="time-converter-card">
+                            <h3 class="converter-title">Conversor de Tiempo</h3>
+                            <div class="converter-form">
+                                <div class="converter-row">
+                                    <div class="converter-input-group">
+                                        <label>Valor</label>
+                                        <input type="number" id="mg1-converter-value" step="any" min="0" placeholder="Ingrese el valor">
+                                    </div>
+                                    <div class="converter-select-group">
+                                        <label>Convertir de</label>
+                                        <select id="mg1-converter-from">
+                                            <option value="seconds">Segundos</option>
+                                            <option value="minutes">Minutos</option>
+                                            <option value="hours">Horas</option>
+                                        </select>
+                                    </div>
+                                    <div class="converter-select-group">
+                                        <label>A</label>
+                                        <select id="mg1-converter-to">
+                                            <option value="seconds">Segundos</option>
+                                            <option value="minutes">Minutos</option>
+                                            <option value="hours">Horas</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="converter-result">
+                                    <span id="mg1-converter-result">Resultado: -</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-card">
                             <form id="mg1-form" class="calculator-form">
@@ -314,6 +434,36 @@
                         <div class="info-card">
                             <h1 class="calculator-title">M/D/1</h1>
                             <p class="calculator-description">El modelo M/D/1 tiene llegadas Poisson y tiempo de servicio determinístico (constante). Este es un caso especial del modelo M/G/1 donde la varianza del tiempo de servicio es cero.</p>
+                        </div>
+                        <div class="time-converter-card">
+                            <h3 class="converter-title">Conversor de Tiempo</h3>
+                            <div class="converter-form">
+                                <div class="converter-row">
+                                    <div class="converter-input-group">
+                                        <label>Valor</label>
+                                        <input type="number" id="md1-converter-value" step="any" min="0" placeholder="Ingrese el valor">
+                                    </div>
+                                    <div class="converter-select-group">
+                                        <label>Convertir de</label>
+                                        <select id="md1-converter-from">
+                                            <option value="seconds">Segundos</option>
+                                            <option value="minutes">Minutos</option>
+                                            <option value="hours">Horas</option>
+                                        </select>
+                                    </div>
+                                    <div class="converter-select-group">
+                                        <label>A</label>
+                                        <select id="md1-converter-to">
+                                            <option value="seconds">Segundos</option>
+                                            <option value="minutes">Minutos</option>
+                                            <option value="hours">Horas</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="converter-result">
+                                    <span id="md1-converter-result">Resultado: -</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-card">
                             <form id="md1-form" class="calculator-form">
