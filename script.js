@@ -138,40 +138,61 @@ class QueueCalculations {
     }
 
     // Modelo M/M/2 
-    static calculateMM2Updated({ lambda, mu1, mu2, pn }) {
-        const muTotal = mu1 + mu2;
-        if (lambda >= muTotal) {
-            throw new Error('El sistema es inestable: λ debe ser menor que μ1 + μ2');
-        }
-
-        const rho = lambda / muTotal;
-        const P0 = 1 / (1 + rho + (rho * rho) / (2 - rho));
-       
-        const Lq = (rho * rho * rho * P0) / (2 * (2 - rho) * (2 - rho));
-        const L = Lq + rho;
-        const Wq = Lq / lambda;
-        const W = L / lambda;
-
-        let results = { rho, P0, L, Lq, W, Wq };
-
-        // Calcular Pn si se proporciona
-        if (pn !== undefined && pn !== null && pn !== '') {
-            const n = parseInt(pn);
-            if (!isNaN(n) && n >= 0) {
-                let PnValue;
-                if (n === 0) {
-                    PnValue = P0;
-                } else if (n === 1) {
-                    PnValue = rho * P0;
-                } else {
-                    PnValue = (Math.pow(rho, n) / Math.pow(2, n - 1)) * P0;
-                }
-                results.PnValue = PnValue;
-            }
-        }
-
-        return results;
+static calculateMM2Updated({ lambda, mu1, mu2, pn }) {
+    // Reordenamos para identificar el servidor más rápido/lento
+    const mu_fast = Math.max(mu1, mu2);
+    const mu_slow = Math.min(mu1, mu2);
+    const mu_sum  = mu_fast + mu_slow; // tasa combinada cuando hay ≥2 en el sistema
+  
+    if (lambda <= 0 || mu_fast <= 0 || mu_slow <= 0) {
+      throw new Error('λ, μ1 y μ2 deben ser mayores que 0');
     }
+    if (lambda >= mu_sum) {
+      throw new Error('El sistema es inestable: λ debe ser menor que μ1 + μ2');
+    }
+  
+    // Utilización total del sistema
+    const rho = lambda / mu_sum;       
+    const r   = lambda / mu_sum;       
+  
+    const P0 = 1 / (1 + (lambda / mu_fast) / (1 - r));
+  
+    
+    const P1 = (lambda / mu_fast) * P0;
+  
+   
+    const L  = (lambda / mu_fast) * P0 / ((1 - r) * (1 - r));
+  
+    //  promedio en servicio
+    const Ls = P1 + 2 * (1 - P0 - P1);
+  
+    // Cola promedio y tiempos
+    const Lq = L - Ls;
+    const Wq = Lq / lambda;
+    const W  = L  / lambda;
+  
+    const results = { rho, P0, L, Lq, W, Wq };
+  
+    // Pn opcional
+    if (pn !== undefined && pn !== null && pn !== '') {
+      const n = parseInt(pn, 10);
+      if (!isNaN(n) && n >= 0) {
+        let PnValue;
+        if (n === 0) {
+          PnValue = P0;
+        } else if (n === 1) {
+          PnValue = P1;
+        } else {
+          // Para n≥2: Pn = (λ/μ_fast) * P0 * r^{n-1}
+          PnValue = (lambda / mu_fast) * P0 * Math.pow(r, n - 1);
+        }
+        results.PnValue = PnValue;
+      }
+    }
+  
+    return results;
+  }
+  
 
     // Modelo M/M/1/N (capacidad finita)
     static calculateMM1N({ lambda, mu, N }) {
@@ -315,6 +336,56 @@ class QueueCalculations {
 
         return results;
     }
+
+
+   // --- PRIORIDADES M/M/1 (no expulsivo), Clase 1 > Clase 2 ---
+static calculateMM1PriorityPR({ lambda1, lambda2, mu }) {
+    if (!lambda1 || lambda1 < 0 || !lambda2 || lambda2 < 0) {
+        throw new Error('λ1 y λ2 deben ser valores positivos.');
+    }
+    if (!mu || mu <= 0) {
+        throw new Error('μ debe ser mayor que 0.');
+    }
+
+    const lambdas = [lambda1, lambda2];
+    const R = lambdas.length;
+    const lambdaTot = lambda1 + lambda2;
+    const rho = lambdaTot / mu;
+    if (rho >= 1) throw new Error('Sistema inestable: Σλ debe ser menor que μ.');
+
+    // ρ acumulados por clase
+    const rhos = [];
+    let acc = 0;
+    for (let r = 0; r < R; r++) {
+        acc += lambdas[r] / mu;
+        rhos.push(acc);
+    }
+
+    let Lq_total = 0, L_total = 0;
+    const perClass = [];
+
+    for (let r = 0; r < R; r++) {
+        const rho_prev = r === 0 ? 0 : rhos[r - 1];
+        const rho_curr = rhos[r];
+        const Wq_r = rho_prev / (mu * (1 - rho_curr) * (1 - rho_prev));
+        const W_r  = Wq_r + 1 / mu;
+        const Lq_r = lambdas[r] * Wq_r;
+        const L_r  = lambdas[r] * W_r;
+
+        Lq_total += Lq_r;
+        L_total  += L_r;
+
+        perClass.push({ classIndex: r + 1, lambda: lambdas[r], Wq: Wq_r, W: W_r, Lq: Lq_r, L: L_r });
+    }
+
+    const P0     = 1 - rho;
+    const Wq_avg = Lq_total / lambdaTot;
+    const W_avg  = L_total / lambdaTot;
+
+    return { rho, P0, L: L_total, Lq: Lq_total, W: W_avg, Wq: Wq_avg, perClass };
+}
+
+
 }
 
 // Gestión de la calculadora y formularios
@@ -412,7 +483,7 @@ class CalculatorManager {
 
     bindEvents() {
         // Para cada modelo, asocia el evento submit del formulario
-        const forms = ['mm1', 'mm2', 'mm1n', 'mg1', 'md1'];
+        const forms = ['mm1', 'mm2', 'mm1n', 'mg1', 'md1', 'priority'];
         forms.forEach(model => {
             const form = document.getElementById(`${model}-form`);
             if (form) {
@@ -421,7 +492,7 @@ class CalculatorManager {
         });
     }
 
-         // NUEVO: Limpia formularios y resultados al cambiar de pestaña
+         // Limpia formularios y resultados al cambiar de pestaña
     bindNavClear() {
         const navItems = document.querySelectorAll('.nav-item');
         navItems.forEach(item => {
@@ -432,7 +503,7 @@ class CalculatorManager {
     }
 
     clearAllFormsAndResults() {
-        const forms = ['mm1', 'mm2', 'mm1n', 'mg1', 'md1'];
+        const forms = ['mm1', 'mm2', 'mm1n', 'mg1', 'md1', 'priority'];
         forms.forEach(model => {
             // Limpiar campos de texto
             const form = document.getElementById(`${model}-form`);
@@ -447,105 +518,208 @@ class CalculatorManager {
     }
 
     handleFormSubmit(e, model) {
-           e.preventDefault(); // Evita recargar la página
-    try {
-        // Lee los datos del formulario y los convierte a números
-        const formData = new FormData(e.target);
-        const inputs = {};
-       
-        for (let [key, value] of formData.entries()) {
-            // Solo validar campos requeridos
-            if (value.trim() !== '') {
-                const numValue = parseFloat(value);
-                if (isNaN(numValue) || numValue < 0) {
-                    throw new Error(`Por favor ingrese un valor válido para ${key}`);
+        e.preventDefault(); // Evita recargar la página
+        try {
+            // Lee los datos del formulario y los convierte a números
+            const formData = new FormData(e.target);
+            const inputs = {};
+    
+            for (let [key, value] of formData.entries()) {
+                if (value.trim() !== '') {
+                    const numValue = parseFloat(value);
+                    if (isNaN(numValue) || numValue < 0) {
+                        throw new Error(`Por favor ingrese un valor válido para ${key}`);
+                    }
+                    inputs[key] = numValue;
+                } else {
+                    inputs[key] = null; // campos opcionales
                 }
-                inputs[key] = numValue;
+            }
+
+            // Validaciones por modelo
+            if (model === 'priority') {
+                const lambda1 = inputs.lambda1 || 0;
+                const lambda2 = inputs.lambda2 || 0;
+                const mu = inputs.mu;
+    
+                if ((lambda1 <= 0 && lambda2 <= 0)) {
+                    throw new Error('Al menos una de las tasas de arribos (λ₁ o λ₂) debe ser mayor que 0');
+                }
+                if (!mu || mu <= 0) {
+                    throw new Error('La tasa de servicio (μ) es obligatoria y debe ser mayor que 0');
+                }
+    
+                // Estabilidad para M/M/1 con prioridades: (λ1 + λ2) / μ < 1
+                const rhoTotal = (lambda1 + lambda2) / mu;
+                if (rhoTotal >= 1) {
+                    throw new Error('El sistema es inestable: (λ₁ + λ₂) debe ser menor que μ');
+                }
             } else {
-                // Para campos opcionales, asignar null
-                inputs[key] = null;
+                // Modelos existentes
+                if (!inputs.lambda || inputs.lambda <= 0) {
+                    throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
+                }
+                if (model !== 'mm2' && (!inputs.mu || inputs.mu <= 0)) {
+                    throw new Error('El tiempo de servicio (μ) es obligatorio y debe ser mayor que 0');
+                }
+                if (model === 'mm2' && (
+                    !inputs.mu1 || inputs.mu1 <= 0 ||
+                    !inputs.mu2 || inputs.mu2 <= 0
+                )) {
+                    throw new Error('Los tiempos de servicio μ1 y μ2 son obligatorios y deben ser mayores que 0');
+                }
+                if (model === 'mm1n' && (!inputs.N || inputs.N <= 0)) {
+                    throw new Error('La capacidad máxima (N) es obligatoria y debe ser mayor que 0');
+                }
+            }
+
+            if (model === 'priority') {
+                const lambda1 = inputs.lambda1 || 0;
+                const lambda2 = inputs.lambda2 || 0;
+                const mu = inputs.mu;
+            
+                if (lambda1 <= 0 && lambda2 <= 0) {
+                    throw new Error('Al menos una de las tasas de arribos (λ₁ o λ₂) debe ser mayor que 0');
+                }
+                if (!mu || mu <= 0) {
+                    throw new Error('La tasa de servicio (μ) es obligatoria y debe ser mayor que 0');
+                }
+                const rhoTotal = (lambda1 + lambda2) / mu;
+                if (rhoTotal >= 1) {
+                    throw new Error('El sistema es inestable: (λ₁ + λ₂) debe ser menor que μ');
+                }
+            } else {
+                // (deja validaciones existentes para los otros modelos)
+            }
+            
+
+            // Cálculo por modelo
+            let results;
+            switch (model) {
+                case 'mm1':
+                    results = QueueCalculations.calculateMM1Updated(inputs);
+                    break;
+                case 'mm2':
+                    results = QueueCalculations.calculateMM2Updated(inputs);
+                    break;
+                case 'mm1n':
+                    results = QueueCalculations.calculateMM1N(inputs);
+                    break;
+                case 'mg1':
+                    results = QueueCalculations.calculateMG1(inputs);
+                    break;
+                case 'md1':
+                    results = QueueCalculations.calculateMD1(inputs);
+                    break;
+                    case 'priority':
+                        results = QueueCalculations.calculateMM1PriorityPR({
+                            lambda1: inputs.lambda1 || 0,
+                            lambda2: inputs.lambda2 || 0,
+                            mu: inputs.mu
+                        });
+                        break;                    
+                default:
+                    throw new Error('Modelo no reconocido');
+            }
+    
+            this.displayResults(model, results); // Muestra los resultados
+            this.hideError(model);               // Oculta errores previos
+        } catch (error) {
+            this.showError(model, error.message); // Muestra el error
+            this.hideResults(model);              // Oculta resultados previos
+        }
+    }
+    
+
+    displayResults(model, results) {
+        // Muestra los resultados en la sección correspondiente
+        const resultsSection = document.getElementById(`${model}-results`);
+        const resultsGrid = document.getElementById(`${model}-results-grid`);
+        if (!resultsSection || !resultsGrid) return;
+    
+        // Etiquetas para cada métrica
+        const labels = {
+            rho: 'Factor de utilización (ρ)',
+            P0: 'Probabilidad de sistema vacío (P₀)',
+            L: 'Número promedio de clientes en el sistema (L)',
+            Lq: 'Número promedio de clientes en cola (Lq)',
+            W: 'Tiempo promedio en el sistema (W)',
+            Wq: 'Tiempo promedio en cola (Wq)',
+            lambdaEff: 'Tasa efectiva de llegadas (λₑ)',
+            PaxValue: 'Probabilidad de al menos x clientes (Pax)',
+            PnValue: 'Probabilidad de n clientes (Pn)',
+            // NOTA: perClass no se muestra aquí porque se renderiza aparte
+        };
+    
+        resultsGrid.innerHTML = '';
+    
+        // Pinta los resultados "globales" (numéricos)
+        Object.entries(results).forEach(([key, value]) => {
+            // Omitir funciones y colecciones complejas
+            if (typeof value === 'function') return;
+            if (key === 'perClass') return;
+    
+            // Solo números (evita errores con strings/objetos)
+            if (Number.isFinite(value)) {
+                const resultCard = document.createElement('div');
+                resultCard.className = 'result-card';
+                resultCard.innerHTML = `
+                    <div class="result-label">${labels[key] || key}</div>
+                    <div class="result-value">${this.formatNumber(value)}</div>
+                `;
+                resultsGrid.appendChild(resultCard);
+            }
+        });
+    
+        // --- Bloque extra para Prioridades (por clase) ---
+        if (model === 'priority' && Array.isArray(results.perClass)) {
+            const classGrid = document.getElementById('priority-class-grid');
+            if (classGrid) {
+                classGrid.innerHTML = '';
+                results.perClass.forEach(cls => {
+                    const card = document.createElement('div');
+                    card.className = 'result-card';
+                    card.innerHTML = `
+                        <div class="result-label">Clase ${cls.classIndex}</div>
+                        <div class="result-value">
+                            λ=${this.formatNumber(cls.lambda)} |
+                            Lq=${this.formatNumber(cls.Lq)} |
+                            L=${this.formatNumber(cls.L)} |
+                            Wq=${this.formatNumber(cls.Wq)} |
+                            W=${this.formatNumber(cls.W)}
+                        </div>
+                    `;
+                    classGrid.appendChild(card);
+                });
             }
         }
 
-        // Validar campos obligatorios
-        if (!inputs.lambda || inputs.lambda <= 0) {
-            throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
-        }
-        // Validación para modelos excepto mm2
-        if (model !== 'mm2' && (!inputs.mu || inputs.mu <= 0)) {
-            throw new Error('El tiempo de servicio (μ) es obligatorio y debe ser mayor que 0');
-        }
-        // Validación específica para mm2
-        if (model === 'mm2' && (!inputs.mu1 || inputs.mu1 <= 0 || !inputs.mu2 || inputs.mu2 <= 0)) {
-            throw new Error('Los tiempos de servicio μ1 y μ2 son obligatorios y deben ser mayores que 0');
-        }
-        if (model === 'mm1n' && (!inputs.N || inputs.N <= 0)) {
-            throw new Error('La capacidad máxima (N) es obligatoria y debe ser mayor que 0');
-        }
-        // Llama al cálculo correspondiente según el modelo
-        let results;
-        switch (model) {
-            case 'mm1':
-                results = QueueCalculations.calculateMM1Updated(inputs);
-                break;
-            case 'mm2':
-                results = QueueCalculations.calculateMM2Updated(inputs);
-                break;
-            case 'mm1n':
-                results = QueueCalculations.calculateMM1N(inputs);
-                break;
-            case 'mg1':
-                results = QueueCalculations.calculateMG1(inputs);
-                break;
-            case 'md1':
-                results = QueueCalculations.calculateMD1(inputs);
-                break;
-            default:
-                throw new Error('Modelo no reconocido');
-        }
-
-        this.displayResults(model, results); // Muestra los resultados
-        this.hideError(model);               // Oculta errores previos
-
-    } catch (error) {
-        this.showError(model, error.message); // Muestra el error
-        this.hideResults(model);              // Oculta resultados previos
+        // Render por clase solo para prioridades
+if (model === 'priority' && Array.isArray(results.perClass)) {
+    const classGrid = document.getElementById('priority-class-grid');
+    if (classGrid) {
+        classGrid.innerHTML = '';
+        results.perClass.forEach(cls => {
+            const card = document.createElement('div');
+            card.className = 'result-card';
+            card.innerHTML = `
+                <div class="result-label">Clase ${cls.classIndex}</div>
+                <div class="result-value">
+                    λ=${this.formatNumber(cls.lambda)} |
+                    Lq=${this.formatNumber(cls.Lq)} |
+                    L=${this.formatNumber(cls.L)} |
+                    Wq=${this.formatNumber(cls.Wq)} |
+                    W=${this.formatNumber(cls.W)}
+                </div>
+            `;
+            classGrid.appendChild(card);
+        });
     }
+}
+    
+        resultsSection.style.display = 'block';
     }
-
-    displayResults(model, results) {
-    // Muestra los resultados en la sección correspondiente
-    const resultsSection = document.getElementById(`${model}-results`);
-    const resultsGrid = document.getElementById(`${model}-results-grid`);
-    if (!resultsSection || !resultsGrid) return;
-
-    // Etiquetas para cada métrica
-    const labels = {
-        rho: 'Factor de utilización (ρ)',
-        P0: 'Probabilidad de sistema vacío (P₀)',
-        L: 'Número promedio de clientes en el sistema (L)',
-        Lq: 'Número promedio de clientes en cola (Lq)',
-        W: 'Tiempo promedio en el sistema (W)',
-        Wq: 'Tiempo promedio en cola (Wq)',
-        lambdaEff: 'Tasa efectiva de llegadas (λₑ)',
-        PaxValue: 'Probabilidad de al menos x clientes (Pax)',
-        PnValue: 'Probabilidad de n clientes (Pn)',
-    };
-
-    resultsGrid.innerHTML = '';
-    Object.entries(results).forEach(([key, value]) => {
-        if (typeof value === 'function') return;
-        const resultCard = document.createElement('div');
-        resultCard.className = 'result-card';
-        resultCard.innerHTML = `
-            <div class="result-label">${labels[key] || key}</div>
-            <div class="result-value">${this.formatNumber(value)}</div>
-        `;
-        resultsGrid.appendChild(resultCard);
-    });
-
-    resultsSection.style.display = 'block';
-    } 
+    
 
     // Modelo M/M/2 actualizado
     static calculateMM2Updated({ lambda, mu1, mu2, pn }) {
