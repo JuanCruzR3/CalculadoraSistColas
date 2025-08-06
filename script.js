@@ -670,6 +670,16 @@ class CalculatorManager {
         Object.entries(results).forEach(([key, value]) => {
             if (typeof value === 'function') return;
             if (key === 'perClass') return;
+            if (key === 'recomendacion') {
+                const resultCard = document.createElement('div');
+                resultCard.className = 'result-card';
+                resultCard.innerHTML = `
+                    <div class="result-label">${labels[key] || key}</div>
+                    <div class="result-value" style="font-weight: bold; color: ${value.includes('Recomendado') ? '#10b981' : value.includes('Considerar') ? '#f59e0b' : '#ef4444'}">${value}</div>
+                `;
+                resultsGrid.appendChild(resultCard);
+                return;
+            }
     
             if (Number.isFinite(value)) {
                 const resultCard = document.createElement('div');
