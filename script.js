@@ -629,6 +629,7 @@ class CalculatorManager {
             WqActual: 'Tiempo promedio en cola actual (Wq)',
             WqNew: 'Tiempo promedio en cola con 3er servidor (Wq)',
             lambdaEff: 'Tasa efectiva de llegadas (λₑ)',
+            recomendacion: 'Recomendación',
             PaxValue: 'Probabilidad de al menos x clientes (Pax)',
             PnValue: 'Probabilidad de n clientes (Pn)',
         };
