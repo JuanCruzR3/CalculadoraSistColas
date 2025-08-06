@@ -405,6 +405,9 @@ class CalculatorManager {
     initMM2CalculationType() {
         const calculationTypeSelect = document.getElementById('mm2-calculation-type');
         if (calculationTypeSelect) {
+            // Mostrar campos iniciales
+            this.toggleMM2CalculationType(calculationTypeSelect.value);
+            
             calculationTypeSelect.addEventListener('change', (e) => {
                 this.toggleMM2CalculationType(e.target.value);
             });
@@ -419,6 +422,11 @@ class CalculatorManager {
         const mu2Group = document.getElementById('mm2-mu2-group');
         const muActualGroup = document.getElementById('mm2-mu-actual-group');
         const mu3Group = document.getElementById('mm2-mu3-group');
+        
+        // Verificar que todos los elementos existen
+        if (!standardNote || !thirdServerNote || !mu1Group || !mu2Group || !muActualGroup || !mu3Group) {
+            return;
+        }
         
         // Limpiar campos al cambiar tipo
         document.getElementById('mm2-mu1').value = '';
