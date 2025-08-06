@@ -531,16 +531,24 @@ class CalculatorManager {
                 if (rhoTotal >= 1) {
                     throw new Error('El sistema es inestable: (λ₁ + λ₂) debe ser menor que μ');
                 }
-            } else if (model !== 'mm2') {
+            } else {
                 // Validaciones para otros modelos
                 if (!inputs.lambda || inputs.lambda <= 0) {
                     throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
                 }
-                if (!inputs.mu || inputs.mu <= 0) {
+                if (model !== 'mm2' && (!inputs.mu || inputs.mu <= 0)) {
                     throw new Error('La tasa de servicio (μ) es obligatorio y debe ser mayor que 0');
                 }
                 if (model === 'mm1n' && (!inputs.N || inputs.N <= 0)) {
                     throw new Error('La capacidad máxima (N) es obligatoria y debe ser mayor que 0');
+                }
+                if (model === 'mm2') {
+                    if (!inputs.mu1 || inputs.mu1 <= 0) {
+                        throw new Error('La tasa de servicio μ1 es obligatoria y debe ser mayor que 0');
+                    }
+                    if (!inputs.mu2 || inputs.mu2 <= 0) {
+                        throw new Error('La tasa de servicio μ2 es obligatoria y debe ser mayor que 0');
+                    }
                 }
             }
 
