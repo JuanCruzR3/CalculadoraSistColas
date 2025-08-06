@@ -278,7 +278,16 @@ class QueueCalculations {
         const Wq = Lq / lambda;
         const W = L / lambda;
        
-        let results = { rho, P0, L, Lq, W, Wq };
+       // E(n) = número esperado de clientes en el sistema = L
+       const En = L;
+       
+       // E(t) = tiempo esperado en el sistema = W
+       const Et = W;
+       
+       // E(s) = tiempo esperado de servicio = 1/μ
+       const Es = 1 / mu;
+       
+       let results = { rho, P0, L, Lq, W, Wq, En, Et, Es };
 
         // Calcular Pax si se proporciona
         if (pax !== undefined && pax !== null && pax !== '') {
@@ -315,7 +324,16 @@ class QueueCalculations {
         const Wq = Lq / lambda;
         const W = L / lambda;
        
-        let results = { rho, P0, L, Lq, W, Wq };
+       // E(n) = número esperado de clientes en el sistema = L
+       const En = L;
+       
+       // E(t) = tiempo esperado en el sistema = W
+       const Et = W;
+       
+       // E(s) = tiempo esperado de servicio = 1/μ
+       const Es = 1 / mu;
+       
+       let results = { rho, P0, L, Lq, W, Wq, En, Et, Es };
 
         // Calcular Pax si se proporciona
         if (pax !== undefined && pax !== null && pax !== '') {
@@ -711,6 +729,9 @@ class CalculatorManager {
             recomendacion: 'Recomendación',
             PaxValue: 'Probabilidad de al menos x clientes (Pax)',
             PnValue: 'Probabilidad de n clientes (Pn)',
+           En: 'Número esperado de clientes en el sistema E(n)',
+           Et: 'Tiempo esperado en el sistema E(t)',
+           Es: 'Tiempo esperado de servicio E(s)',
         };
     
         resultsGrid.innerHTML = '';
