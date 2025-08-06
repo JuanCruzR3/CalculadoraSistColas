@@ -397,6 +397,7 @@ class CalculatorManager {
         this.bindEvents();
         this.bindNavClear();
         this.initTimeConverters();
+    }
 
     // Inicializa los conversores de tiempo para todos los modelos
     initTimeConverters() {
@@ -411,6 +412,8 @@ class CalculatorManager {
         const valueInput = document.getElementById(`${model}-converter-value`);
         const fromSelect = document.getElementById(`${model}-converter-from`);
         const toSelect = document.getElementById(`${model}-converter-to`);
+    }
+
     // Convierte tiempo entre diferentes unidades
     convertTime(value, fromUnit, toUnit) {
         // Primero convertir a segundos
@@ -528,24 +531,16 @@ class CalculatorManager {
                 if (rhoTotal >= 1) {
                     throw new Error('El sistema es inestable: (λ₁ + λ₂) debe ser menor que μ');
                 }
-            } else {
+            } else if (model !== 'mm2') {
                 // Validaciones para otros modelos
                 if (!inputs.lambda || inputs.lambda <= 0) {
                     throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
                 }
-                if (model !== 'mm2' && (!inputs.mu || inputs.mu <= 0)) {
+                if (!inputs.mu || inputs.mu <= 0) {
                     throw new Error('La tasa de servicio (μ) es obligatorio y debe ser mayor que 0');
                 }
                 if (model === 'mm1n' && (!inputs.N || inputs.N <= 0)) {
                     throw new Error('La capacidad máxima (N) es obligatoria y debe ser mayor que 0');
-                }
-                if (model === 'mm2') {
-                    if (!inputs.mu1 || inputs.mu1 <= 0) {
-                        throw new Error('La tasa de servicio μ1 es obligatoria y debe ser mayor que 0');
-                    }
-                    if (!inputs.mu2 || inputs.mu2 <= 0) {
-                        throw new Error('La tasa de servicio μ2 es obligatoria y debe ser mayor que 0');
-                    }
                 }
             }
 
@@ -671,27 +666,27 @@ class CalculatorManager {
         }
 
         // Render por clase solo para prioridades
-if (model === 'priority' && Array.isArray(results.perClass)) {
-    const classGrid = document.getElementById('priority-class-grid');
-    if (classGrid) {
-        classGrid.innerHTML = '';
-        results.perClass.forEach(cls => {
-            const card = document.createElement('div');
-            card.className = 'result-card';
-            card.innerHTML = `
-                <div class="result-label">Clase ${cls.classIndex}</div>
-                <div class="result-value">
-                    λ=${this.formatNumber(cls.lambda)} |
-                    Lq=${this.formatNumber(cls.Lq)} |
-                    L=${this.formatNumber(cls.L)} |
-                    Wq=${this.formatNumber(cls.Wq)} |
-                    W=${this.formatNumber(cls.W)}
-                </div>
-            `;
-            classGrid.appendChild(card);
-        });
-    }
-}
+        if (model === 'priority' && Array.isArray(results.perClass)) {
+            const classGrid = document.getElementById('priority-class-grid');
+            if (classGrid) {
+                classGrid.innerHTML = '';
+                results.perClass.forEach(cls => {
+                    const card = document.createElement('div');
+                    card.className = 'result-card';
+                    card.innerHTML = `
+                        <div class="result-label">Clase ${cls.classIndex}</div>
+                        <div class="result-value">
+                            λ=${this.formatNumber(cls.lambda)} |
+                            Lq=${this.formatNumber(cls.Lq)} |
+                            L=${this.formatNumber(cls.L)} |
+                            Wq=${this.formatNumber(cls.Wq)} |
+                            W=${this.formatNumber(cls.W)}
+                        </div>
+                    `;
+                    classGrid.appendChild(card);
+                });
+            }
+        }
     
         resultsSection.style.display = 'block';
     }
