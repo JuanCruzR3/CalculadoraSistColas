@@ -536,17 +536,7 @@ class CalculatorManager {
             }
 
             // Validaciones específicas por modelo
-            if (model === 'mm2') {
-                if (!inputs.lambda || inputs.lambda <= 0) {
-                    throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
-                }
-                if (!inputs.mu1 || inputs.mu1 <= 0) {
-                    throw new Error('La tasa de servicio μ1 es obligatoria y debe ser mayor que 0');
-                }
-                if (!inputs.mu2 || inputs.mu2 <= 0) {
-                    throw new Error('La tasa de servicio μ2 es obligatoria y debe ser mayor que 0');
-                }
-            } else if (model === 'priority') {
+            if (model === 'priority') {
                 const lambda1 = inputs.lambda1 || 0;
                 const lambda2 = inputs.lambda2 || 0;
                 const mu = inputs.mu;
@@ -562,7 +552,7 @@ class CalculatorManager {
                 if (rhoTotal >= 1) {
                     throw new Error('El sistema es inestable: (λ₁ + λ₂) debe ser menor que μ');
                 }
-            } else {
+            } else if (model !== 'mm2') {
                 // Validaciones para otros modelos
                 if (!inputs.lambda || inputs.lambda <= 0) {
                     throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
