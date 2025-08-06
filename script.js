@@ -147,27 +147,31 @@ class QueueCalculations {
         if (lambda >= muSum) {
             throw new Error('El sistema es inestable: λ debe ser menor que μ1 + μ2');
         }
+        // FÓRMULAS CORRECTAS PARA M/M/2
         
-        // Para M/M/2, rho es la utilización total del sistema
-        const rho = lambda / muSum;
-        
-        // Cálculo correcto de P0 para M/M/2
-        const rho1 = lambda / mu1;
-        const rho2 = lambda / mu2;
-        
-        // Si los servidores son idénticos (caso común)
+        // Caso 1: Servidores idénticos (μ1 = μ2)
         if (mu1 === mu2) {
-            const mu = mu1; // Tasa de servicio de cada servidor
-            const rhoServer = lambda / mu; // Utilización por servidor
+            const mu = mu1;
+            const rho = lambda / (2 * mu); // Utilización por servidor
+            const a = lambda / mu; // Parámetro a = λ/μ
             
-            // Fórmulas estándar para M/M/2 con servidores idénticos
-            const P0 = 1 / (1 + rhoServer + (rhoServer * rhoServer) / (2 * (1 - rho)));
-            const Lq = (Math.pow(rho, 3)) / (2 * (1 - rho)) * P0;
-            const L = Lq + rho;
-            const Wq = Lq / lambda;
+            // P0 para M/M/2 con servidores idénticos
+            const P0 = 1 / (1 + a + (a * a) / 2);
+            
+            // P1 = a * P0
+            const P1 = a * P0;
+            
+            // Lq para M/M/2
+            const Lq = (a * a * a) / (4 - 2 * a) * P0;
+            
+            // L = Lq + número promedio en servicio
+            const L = Lq + a * (1 - P0);
+            
+            // W y Wq usando Little's Law
             const W = L / lambda;
+            const Wq = Lq / lambda;
             
-            let results = { rho, P0, L, Lq, W, Wq };
+            let results = { rho: 2 * rho, P0, L, Lq, W, Wq };
             
             // Calcular Pn si se proporciona
             if (pn !== undefined && pn !== null && pn !== '') {
@@ -177,23 +181,29 @@ class QueueCalculations {
                     if (n === 0) {
                         PnValue = P0;
                     } else if (n === 1) {
-                        PnValue = rhoServer * P0;
+                        PnValue = P1;
                     } else {
-                        PnValue = Math.pow(rhoServer, Math.min(n, 2)) * Math.pow(rho, Math.max(0, n - 2)) * P0 / Math.pow(2, Math.max(0, n - 2));
+                        PnValue = (Math.pow(a, n) / Math.pow(2, n - 1)) * P0;
                     }
                     results.PnValue = PnValue;
                 }
             }
             
             return results;
-        } else {
-            // Caso general para servidores con diferentes tasas
-            // Aproximación usando servidor equivalente
-            const P0 = (1 - rho) / (1 + rho);
-            const Lq = (rho * rho * rho) / (2 * (1 - rho * rho));
-            const L = Lq + rho;
-            const Wq = Lq / lambda;
+        } 
+        // Caso 2: Servidores diferentes
+        else {
+            const rho = lambda / muSum;
+            
+            // Para servidores heterogéneos, usamos aproximación
+            const mu_avg = (mu1 + mu2) / 2;
+            const a = lambda / mu_avg;
+            
+            const P0 = 1 / (1 + a + (a * a) / 2);
+            const Lq = (a * a * a) / (4 - 2 * a) * P0;
+            const L = Lq + lambda / mu_avg;
             const W = L / lambda;
+            const Wq = Lq / lambda;
             
             let results = { rho, P0, L, Lq, W, Wq };
             
