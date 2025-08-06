@@ -535,8 +535,18 @@ class CalculatorManager {
                 }
             }
 
-            // Validaciones por modelo
-            if (model === 'priority') {
+            // Validaciones específicas por modelo
+            if (model === 'mm2') {
+                if (!inputs.lambda || inputs.lambda <= 0) {
+                    throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
+                }
+                if (!inputs.mu1 || inputs.mu1 <= 0) {
+                    throw new Error('La tasa de servicio μ1 es obligatoria y debe ser mayor que 0');
+                }
+                if (!inputs.mu2 || inputs.mu2 <= 0) {
+                    throw new Error('La tasa de servicio μ2 es obligatoria y debe ser mayor que 0');
+                }
+            } else if (model === 'priority') {
                 const lambda1 = inputs.lambda1 || 0;
                 const lambda2 = inputs.lambda2 || 0;
                 const mu = inputs.mu;
@@ -548,29 +558,17 @@ class CalculatorManager {
                     throw new Error('La tasa de servicio (μ) es obligatoria y debe ser mayor que 0');
                 }
     
-                // Estabilidad para M/M/1 con prioridades: (λ1 + λ2) / μ < 1
                 const rhoTotal = (lambda1 + lambda2) / mu;
                 if (rhoTotal >= 1) {
                     throw new Error('El sistema es inestable: (λ₁ + λ₂) debe ser menor que μ');
                 }
-            } else if (model === 'mm2') {
-                if (!inputs.lambda || inputs.lambda <= 0) {
-                    throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
-                }
-                
-                if (!inputs.mu1 || inputs.mu1 <= 0) {
-                    throw new Error('El tiempo de servicio μ1 es obligatorio y debe ser mayor que 0');
-                }
-                if (!inputs.mu2 || inputs.mu2 <= 0) {
-                    throw new Error('El tiempo de servicio μ2 es obligatorio y debe ser mayor que 0');
-                }
             } else {
-                // Modelos existentes
+                // Validaciones para otros modelos
                 if (!inputs.lambda || inputs.lambda <= 0) {
                     throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
                 }
                 if (!inputs.mu || inputs.mu <= 0) {
-                    throw new Error('El tiempo de servicio (μ) es obligatorio y debe ser mayor que 0');
+                    throw new Error('La tasa de servicio (μ) es obligatorio y debe ser mayor que 0');
                 }
                 if (model === 'mm1n' && (!inputs.N || inputs.N <= 0)) {
                     throw new Error('La capacidad máxima (N) es obligatoria y debe ser mayor que 0');
