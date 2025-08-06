@@ -147,31 +147,30 @@ class QueueCalculations {
         if (lambda >= muSum) {
             throw new Error('El sistema es inestable: λ debe ser menor que μ1 + μ2');
         }
-        // FÓRMULAS CORRECTAS PARA M/M/2
+        // FÓRMULAS ESTÁNDAR M/M/2
+        const rho = lambda / muSum; // Factor de utilización total del sistema
         
         // Caso 1: Servidores idénticos (μ1 = μ2)
         if (mu1 === mu2) {
-            const mu = mu1;
-            const rho = lambda / (2 * mu); // Utilización por servidor
+            const mu = mu1; // Tasa de servicio de cada servidor
             const a = lambda / mu; // Parámetro a = λ/μ
             
-            // P0 para M/M/2 con servidores idénticos
-            const P0 = 1 / (1 + a + (a * a) / 2);
+            // P0 = probabilidad de 0 clientes en el sistema
+            const P0 = 1 / (1 + a + (a * a) / (2 * (1 - rho)));
             
-            // P1 = a * P0
-            const P1 = a * P0;
+            // Lq = número promedio de clientes en cola
+            const Lq = (a * a * a) / (2 * (1 - rho)) * P0;
             
-            // Lq para M/M/2
-            const Lq = (a * a * a) / (4 - 2 * a) * P0;
-            
-            // L = Lq + número promedio en servicio
+            // L = número promedio de clientes en el sistema
             const L = Lq + a * (1 - P0);
             
-            // W y Wq usando Little's Law
+            // W = tiempo promedio en el sistema
             const W = L / lambda;
+            
+            // Wq = tiempo promedio en cola
             const Wq = Lq / lambda;
             
-            let results = { rho: 2 * rho, P0, L, Lq, W, Wq };
+            let results = { rho, P0, L, Lq, W, Wq };
             
             // Calcular Pn si se proporciona
             if (pn !== undefined && pn !== null && pn !== '') {
@@ -181,7 +180,7 @@ class QueueCalculations {
                     if (n === 0) {
                         PnValue = P0;
                     } else if (n === 1) {
-                        PnValue = P1;
+                        PnValue = a * P0;
                     } else {
                         PnValue = (Math.pow(a, n) / Math.pow(2, n - 1)) * P0;
                     }
@@ -191,17 +190,22 @@ class QueueCalculations {
             
             return results;
         } 
-        // Caso 2: Servidores diferentes
+        // Caso 2: Servidores diferentes (heterogéneos)
         else {
-            const rho = lambda / muSum;
+            // Para servidores heterogéneos, usamos aproximación con media armónica
+            const mu_eff = (2 * mu1 * mu2) / (mu1 + mu2); // Media armónica
+            const a = lambda / mu_eff;
             
-            // Para servidores heterogéneos, usamos aproximación
-            const mu_avg = (mu1 + mu2) / 2;
-            const a = lambda / mu_avg;
+            // P0 para servidores heterogéneos
+            const P0 = 1 / (1 + a + (a * a) / (2 * (1 - rho)));
             
-            const P0 = 1 / (1 + a + (a * a) / 2);
-            const Lq = (a * a * a) / (4 - 2 * a) * P0;
-            const L = Lq + lambda / mu_avg;
+            // Lq usando aproximación
+            const Lq = (a * a * a) / (2 * (1 - rho)) * P0;
+            
+            // L = Lq + clientes siendo servidos
+            const L = Lq + lambda / mu_eff * (1 - P0);
+            
+            // W y Wq usando Little's Law
             const W = L / lambda;
             const Wq = Lq / lambda;
             
@@ -211,7 +215,14 @@ class QueueCalculations {
             if (pn !== undefined && pn !== null && pn !== '') {
                 const n = parseInt(pn, 10);
                 if (!isNaN(n) && n >= 0) {
-                    const PnValue = Math.pow(rho, n) * P0;
+                    let PnValue;
+                    if (n === 0) {
+                        PnValue = P0;
+                    } else if (n === 1) {
+                        PnValue = a * P0;
+                    } else {
+                        PnValue = (Math.pow(a, n) / Math.pow(2, n - 1)) * P0;
+                    }
                     results.PnValue = PnValue;
                 }
             }
