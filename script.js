@@ -397,7 +397,6 @@ class CalculatorManager {
         this.bindEvents();
         this.bindNavClear();
         this.initTimeConverters();
-    }
 
     // Inicializa los conversores de tiempo para todos los modelos
     initTimeConverters() {
@@ -412,29 +411,6 @@ class CalculatorManager {
         const valueInput = document.getElementById(`${model}-converter-value`);
         const fromSelect = document.getElementById(`${model}-converter-from`);
         const toSelect = document.getElementById(`${model}-converter-to`);
-        const resultSpan = document.getElementById(`${model}-converter-result`);
-
-        if (!valueInput || !fromSelect || !toSelect || !resultSpan) return;
-
-        const updateConversion = () => {
-            const value = parseFloat(valueInput.value);
-            if (isNaN(value) || value < 0) {
-                resultSpan.textContent = 'Resultado: -';
-                return;
-            }
-
-            const fromUnit = fromSelect.value;
-            const toUnit = toSelect.value;
-            const convertedValue = this.convertTime(value, fromUnit, toUnit);
-            
-            resultSpan.textContent = `Resultado: ${convertedValue.toFixed(6)} ${this.getUnitLabel(toUnit)}`;
-        };
-
-        valueInput.addEventListener('input', updateConversion);
-        fromSelect.addEventListener('change', updateConversion);
-        toSelect.addEventListener('change', updateConversion);
-    }
-
     // Convierte tiempo entre diferentes unidades
     convertTime(value, fromUnit, toUnit) {
         // Primero convertir a segundos
@@ -552,16 +528,24 @@ class CalculatorManager {
                 if (rhoTotal >= 1) {
                     throw new Error('El sistema es inestable: (λ₁ + λ₂) debe ser menor que μ');
                 }
-            } else if (model !== 'mm2') {
+            } else {
                 // Validaciones para otros modelos
                 if (!inputs.lambda || inputs.lambda <= 0) {
                     throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
                 }
-                if (!inputs.mu || inputs.mu <= 0) {
+                if (model !== 'mm2' && (!inputs.mu || inputs.mu <= 0)) {
                     throw new Error('La tasa de servicio (μ) es obligatorio y debe ser mayor que 0');
                 }
                 if (model === 'mm1n' && (!inputs.N || inputs.N <= 0)) {
                     throw new Error('La capacidad máxima (N) es obligatoria y debe ser mayor que 0');
+                }
+                if (model === 'mm2') {
+                    if (!inputs.mu1 || inputs.mu1 <= 0) {
+                        throw new Error('La tasa de servicio μ1 es obligatoria y debe ser mayor que 0');
+                    }
+                    if (!inputs.mu2 || inputs.mu2 <= 0) {
+                        throw new Error('La tasa de servicio μ2 es obligatoria y debe ser mayor que 0');
+                    }
                 }
             }
 

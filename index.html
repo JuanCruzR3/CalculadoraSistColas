@@ -306,45 +306,19 @@
                             <li>A. La utilización del sistema </li>
                             <li>B. El número promedio de frascos en el sistema</li>
                             <li>C. El tiempo promedio que un frasco pasa en el sistema</li>
-                        </ul> 
-                    </li>
-                    <li>Ejercicio 31: Al mostrador de atención al cliente en una tienda, los clientes llegan con una tasa promedio de 20 clientes por hora. El tiempo de servicio es determinístico, con un tiempo medio de 2 minutos por cliente.
-                        <ul>
-                            <li>A. Calcular la tasa de llegada y la tasa de servicio </li>
-                            <li>B. Determinar el factor de utilización del sistema</li>
-                            <li>C. Calcular la longitud promedio de la cola</li>
-                        </ul>
-                    </li>
-                    <li>Ejercicio 32:En una fábrica se utiliza un solo robot para colocar tapas a frascos de medicamentos.  Los frascos llegan a razón de 90 por hora. El robot tarda exactamente 36 segundos por frasco, de forma constante. Calcular:
-                        <ul>
-                            <li>A. La longitud promedio de la cola  </li>
                             <li>B. El tiempo promedio de espera en el sistema </li>
                             <li>C. El número promedio de frascos en el sistema</li>
                         </ul>
                     </li>
                     <li>Ejercicio 33: A un maxikiosco llegan en promedio 5 clientes por hora. El tiempo de servicio promedio es de 10 minutos (a la tienda solo pueden entrar 3 clientes en forma simultánea)
-                        <ul>
-                            <li>A. Calcular la tasa de utilización del sistema </li>
-                            <li>B. Calcular rendimiento a la entrada</li>
-                            <li>C. Calcular rendimiento a la salida</li>
-                        </ul>
-                    </li>
-                    <li>Ejercicio 34: En una oficina, los clientes llegan con una tasa promedio de 14 por hora. Actualmente hay 2 servidores que atienden cada uno a una tasa de 8 clientes por hora. El gerente está considerando agregar un tercer servidor, pero más lento: atendería a una tasa de solo 4 clientes por hora. Se considera que el ρ crítico del sistema es 0.85: si la utilización supera ese valor, el sistema se congestiona.
-                        <ul>
-                            <li>A. Calcular la utilización actual (ρ) del sistema con 2 servidores.</li>
-                            <li>B. Calcular la utilización si se agrega el tercer servidor lento.</li>
-                            <li>C. Concluir si conviene agregar el servidor lento.</li>
-                        </ul>
-                    </li>
-                    <li>Ejercicio 35: En un centro de atención al público, los clientes llegan a razón de 14 clientes por hora. Actualmente el sistema tiene 2 servidores:
-                        Servidor A atiende a razón de 10 clientes por hora
-                        Servidor B atiende a razón de 6 clientes por hora
-                        Los clientes no eligen servidor, sino que ocupan el primero libre. El dueño está evaluando reemplazar ambos por un solo servidor más rápido, capaz de atender a razón de 16 clientes por hora.
-                        <ul>
-                            <li>A. Calcular el ρ actual del sistema M/M/2 con los dos servidores (sin selección).</li>
-                            <li>B. Calcular el ρ crítico</li>
-                            <li>C. Está el sistema actual por encima del ρ crítico?</li>
-                            <li>E. Calcular el ρ del nuevo sistema M/M/1 con un solo servidor de μ = 16.</li>
+                            <div class="input-group">
+                                <label for="mm2-mu1">Tiempo de servicio 1 (igual o más rápido - μ1)*</label>
+                                <input type="number" id="mm2-mu1" name="mu1" step="any" placeholder="Ingrese el tiempo de servicio 1" required>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="mm2-mu2">Tiempo de servicio 2 (igual o más lento - μ2)*</label>
+                                <input type="number" id="mm2-mu2" name="mu2" step="any" placeholder="Ingrese el tiempo de servicio 2" required>
                             <li>F. Decidir qué sistema conviene y justificar la respuesta</li>
                             
                         </ul>
