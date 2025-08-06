@@ -710,26 +710,37 @@ class CalculatorManager {
         // Etiquetas para cada métrica
         const labels = {
             rho: 'Factor de utilización (ρ)',
+            rhoActual: 'Factor de utilización actual (ρ)',
+            rhoNew: 'Factor de utilización con 3er servidor (ρ)',
             P0: 'Probabilidad de sistema vacío (P₀)',
+            P0Actual: 'Probabilidad sistema vacío actual (P₀)',
+            P0New: 'Probabilidad sistema vacío con 3er servidor (P₀)',
             L: 'Número promedio de clientes en el sistema (L)',
+            LActual: 'Clientes promedio en sistema actual (L)',
+            LNew: 'Clientes promedio con 3er servidor (L)',
             Lq: 'Número promedio de clientes en cola (Lq)',
+            LqActual: 'Clientes promedio en cola actual (Lq)',
+            LqNew: 'Clientes promedio en cola con 3er servidor (Lq)',
             W: 'Tiempo promedio en el sistema (W)',
+            WActual: 'Tiempo promedio en sistema actual (W)',
+            WNew: 'Tiempo promedio en sistema con 3er servidor (W)',
             Wq: 'Tiempo promedio en cola (Wq)',
+            WqActual: 'Tiempo promedio en cola actual (Wq)',
+            WqNew: 'Tiempo promedio en cola con 3er servidor (Wq)',
             lambdaEff: 'Tasa efectiva de llegadas (λₑ)',
             PaxValue: 'Probabilidad de al menos x clientes (Pax)',
             PnValue: 'Probabilidad de n clientes (Pn)',
-            // NOTA: perClass no se muestra aquí porque se renderiza aparte
         };
     
         resultsGrid.innerHTML = '';
     
-        // Pinta los resultados "globales" (numéricos)
+        // Mostrar resultados numéricos
         Object.entries(results).forEach(([key, value]) => {
-            // Omitir funciones y colecciones complejas
             if (typeof value === 'function') return;
             if (key === 'perClass') return;
+            if (key === 'thirdServerAnalysis') return;
+            if (key === 'systemType') return;
     
-            // Solo números (evita errores con strings/objetos)
             if (Number.isFinite(value)) {
                 const resultCard = document.createElement('div');
                 resultCard.className = 'result-card';
@@ -741,6 +752,32 @@ class CalculatorManager {
             }
         });
     
+        // Mostrar análisis del tercer servidor si existe
+        if (results.thirdServerAnalysis) {
+            const analysisCard = document.createElement('div');
+            analysisCard.className = 'result-card';
+            analysisCard.style.gridColumn = 'span 2';
+            
+            if (results.thirdServerAnalysis.viable) {
+                analysisCard.innerHTML = `
+                    <div class="result-label">Análisis del Tercer Servidor</div>
+                    <div class="result-value">
+                        <strong>${results.thirdServerAnalysis.recommendation}</strong><br>
+                        Mejora en Lq: ${results.thirdServerAnalysis.improvementLq.toFixed(2)}%<br>
+                        Mejora en Wq: ${results.thirdServerAnalysis.improvementWq.toFixed(2)}%
+                    </div>
+                `;
+            } else {
+                analysisCard.innerHTML = `
+                    <div class="result-label">Análisis del Tercer Servidor</div>
+                    <div class="result-value">
+                        <strong>No viable:</strong> ${results.thirdServerAnalysis.reason}
+                    </div>
+                `;
+            }
+            resultsGrid.appendChild(analysisCard);
+        }
+
         // --- Bloque extra para Prioridades (por clase) ---
         if (model === 'priority' && Array.isArray(results.perClass)) {
             const classGrid = document.getElementById('priority-class-grid');
