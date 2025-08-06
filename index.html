@@ -3,33 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora Teoría de Colas</title>
-    <!-- Enlace a la hoja de estilos principal -->
+    <title>Calculadora de Sistemas de Colas</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Iconos Lucide para los SVG -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.344.0/lucide.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="app">
-        <!-- Encabezado para móviles -->
+        <!-- Mobile Header -->
         <header class="mobile-header">
             <div class="mobile-header-content">
                 <div class="mobile-header-left">
-                    <!-- Botón para abrir el menú lateral en móviles -->
                     <button id="mobile-menu-btn" class="mobile-menu-btn">
-                        <!-- Icono de menú hamburguesa -->
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="3" y1="6" x2="21" y2="6"></line>
                             <line x1="3" y1="12" x2="21" y2="12"></line>
                             <line x1="3" y1="18" x2="21" y2="18"></line>
                         </svg>
                     </button>
-                    <!-- Título en versión móvil -->
-                    <h1 class="mobile-title">Calculadora Teoría de Colas</h1>
+                    <h1 class="mobile-title">Calculadora de Colas</h1>
                 </div>
-                <!-- Botón para cambiar el tema (claro/oscuro) en móvil -->
                 <button id="mobile-theme-btn" class="theme-btn">
-                    <!-- Icono de sol (modo claro) -->
                     <svg class="theme-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="5"></circle>
                         <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -41,7 +33,6 @@
                         <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                     </svg>
-                    <!-- Icono de luna (modo oscuro) -->
                     <svg class="theme-icon moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
@@ -49,24 +40,19 @@
             </div>
         </header>
 
-        <!-- Barra lateral (sidebar) para navegación principal -->
-        <div id="sidebar" class="sidebar">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar">
             <div class="sidebar-header">
-                <h1 class="sidebar-title">Calculadora Teoría de Colas</h1>
-                <!-- Botón para cerrar el sidebar en móviles -->
+                <h2 class="sidebar-title">Modelos de Colas</h2>
                 <button id="sidebar-close-btn" class="sidebar-close-btn">
-                    <!-- Icono de cerrar (X) -->
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
                 </button>
             </div>
-            
-            <!-- Navegación entre páginas/modelos -->
             <nav class="sidebar-nav">
                 <div class="nav-items">
-                    <!-- Botones para cambiar entre las distintas páginas de la app -->
                     <button class="nav-item active" data-page="home">Inicio</button>
                     <button class="nav-item" data-page="mm1">M/M/1</button>
                     <button class="nav-item" data-page="mm2">M/M/2</button>
@@ -74,15 +60,10 @@
                     <button class="nav-item" data-page="mg1">M/G/1</button>
                     <button class="nav-item" data-page="md1">M/D/1</button>
                     <button class="nav-item" data-page="priority">Prioridades</button>
-                    <button class="nav-item" data-page="ejercicios">Ejercicios</button> 
-
                 </div>
             </nav>
-
             <div class="sidebar-footer">
-                <!-- Botón para cambiar el tema en escritorio -->
                 <button id="desktop-theme-btn" class="desktop-theme-btn">
-                    <!-- Iconos de sol y luna -->
                     <svg class="theme-icon sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="5"></circle>
                         <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -100,55 +81,49 @@
                     <span class="theme-text">Modo Claro</span>
                 </button>
             </div>
-        </div>
+        </aside>
 
-        <!-- Overlay para oscurecer el fondo cuando el sidebar está abierto en móvil -->
+        <!-- Overlay -->
         <div id="overlay" class="overlay"></div>
 
-        <!-- Contenido principal de la aplicación -->
-        <main id="main-content" class="main-content">
-            <!-- Página de inicio -->
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Page -->
             <div id="home-page" class="page active">
                 <div class="page-container">
                     <div class="content-card">
-                        <h1 class="page-title">Teoría de Colas</h1>
-                        
+                        <h1 class="page-title">Calculadora de Sistemas de Colas</h1>
                         <div class="content-text">
-                            <!-- Descripción y créditos del proyecto -->
-                            <p>Este proyecto fue desarrollado por Juan Cruz Rodriguez, estudiante de Ingeniería en Sistemas de Información en la Universidad Abierta Interamericana.</p>
-
-                            <p>El objetivo de este proyecto es simular un sistema de colas, para poder analizar y estudiar el comportamiento de los sistemas de espera.</p>
-
-                            <p>La Teoría de Colas es una rama de las matemáticas y la estadística que estudia el comportamiento de las líneas de espera o colas en sistemas donde los recursos disponibles (como servidores o máquinas) son limitados y los clientes (o solicitudes) deben esperar para ser atendidos. Se enfoca en analizar diversos aspectos de estos sistemas, como el tiempo de espera, la longitud de las colas, la tasa de llegada de los clientes y la capacidad de los servidores, con el objetivo de optimizar el rendimiento y la eficiencia de los sistemas de espera.</p>
+                            <p>Bienvenido a la calculadora de sistemas de colas. Esta herramienta te permite calcular métricas importantes para diferentes modelos de teoría de colas.</p>
+                            <p>Selecciona un modelo del menú lateral para comenzar a calcular las métricas de rendimiento de tu sistema de colas.</p>
                         </div>
-
+                        
                         <div class="models-section">
                             <h2 class="models-title">Modelos Disponibles</h2>
-                            <!-- Tarjetas con los modelos de colas disponibles -->
                             <div class="models-grid">
                                 <div class="model-card">
                                     <h3>M/M/1</h3>
-                                    <p>Sistema con un servidor, llegadas Poisson y servicio exponencial.</p>
+                                    <p>Sistema con llegadas Poisson, servicio exponencial y un servidor.</p>
                                 </div>
-
                                 <div class="model-card">
                                     <h3>M/M/2</h3>
-                                    <p>Sistema con dos servidores en paralelo, llegadas Poisson y servicio exponencial.</p>
+                                    <p>Sistema con llegadas Poisson, servicio exponencial y dos servidores.</p>
                                 </div>
-
                                 <div class="model-card">
                                     <h3>M/M/1/N</h3>
-                                    <p>Sistema M/M/1 con capacidad limitada a N clientes.</p>
+                                    <p>Sistema M/M/1 con capacidad máxima limitada a N clientes.</p>
                                 </div>
-
                                 <div class="model-card">
                                     <h3>M/G/1</h3>
-                                    <p>Sistema con un servidor, llegadas Poisson y distribución general de servicio.</p>
+                                    <p>Sistema con llegadas Poisson, servicio general y un servidor.</p>
                                 </div>
-
                                 <div class="model-card">
                                     <h3>M/D/1</h3>
-                                    <p>Sistema con un servidor, llegadas Poisson y servicio determinístico.</p>
+                                    <p>Sistema con llegadas Poisson, servicio determinístico y un servidor.</p>
+                                </div>
+                                <div class="model-card">
+                                    <h3>Prioridades</h3>
+                                    <p>Sistema M/M/1 con dos clases de prioridad no expulsiva.</p>
                                 </div>
                             </div>
                         </div>
@@ -156,200 +131,58 @@
                 </div>
             </div>
 
-            <!-- Página de Ejercicios -->
-<div id="ejercicios-page" class="page">
-    <div class="page-container">
-        <div class="content-card">
-            <h1 class="page-title">Ejercicios</h1>
-            <div class="content-text">
-                <p>Aquí veremos los ejercicios presentados en clase.</p>
-                <p>Ejercicios:</p>
-                <ul>
-                    <li>Ejercicio 1: Un almacén tiene un solo cajero. Los clientes llegan con una tasa promedio de 29 por hora. El cajero tarda en promedio 3 minutos en atender a cada cliente. ¿Cuál es el número promedio de clientes en la tienda?  ¿Cuál es el tiempo promedio de espera en cola? ¿Cuál es la probabilidad de que el cajero esté desocupado?</li>
-                    <li>Ejercicio 2: Una estación de servicio tiene un solo surtidor. Los autos llegan con una tasa promedio de 25 por hora. El surtidor puede atender a un auto cada 5 minutos en promedio. ¿Cuál es la probabilidad de que haya al menos dos autos esperando? ¿Cuál es el factor de uso de la estación de servicio?</li>
-                    <li>Ejercicio 3: Un restaurante tiene un solo mozo. Los clientes llegan al restaurante con una tasa promedio de 12 por hora. El mozo tarda en promedio 5 minutos en atender a cada cliente. ¿Cuál es el tiempo promedio que un cliente pasa en el restaurante? ¿Cuál es la probabilidad de que haya 10 clientes en el restaurante?</li>
-                    <li>Ejercicio 4: Una oficina de atención al cliente tiene un solo empleado. Los clientes llegan a la oficina con una tasa promedio de 10 por hora. El empleado tarda en promedio 4 minutos en atender a cada cliente. ¿Cuál es la probabilidad de que no haya clientes en la oficina? ¿Cuál es el promedio de clientes en cola?</li>
-                    <li>Ejercicio 5: Un centro de llamadas tiene un solo operador. Las llamadas llegan al centro con una tasa promedio de 25 por hora. El operador tarda en promedio 2 minutos en atender una llamada. ¿Cuál es el número promedio de llamadas en espera? ¿Cuál es la probabilidad de que haya al menos 4 llamadas en espera?</li>
-                    <li>Ejercicio 6: Una cafetería tiene un solo barista. Los clientes llegan a la cafetería con una tasa promedio de 40 por hora. El barista tarda en promedio 1 minuto en preparar cada café. ¿Cuál es la probabilidad de que haya exactamente tres clientes esperando en la cafetería?</li>
-                    <li>Ejercicio 7: A un restaurante de comida rápida llegan en promedio 100 clientes por hora. En promedio atiende 150 clientes por hora. Calcular ¿cuál es la probabilidad de que el restaurante esté ocioso?, ¿cuál es el número promedio de clientes en cola?</li>
-                    <li>Ejercicio 8: Un taller mecánico tiene un solo mecánico. Los clientes llegan al taller con una tasa promedio de 28 por hora. El mecánico tarda en promedio 6 minutos en reparar cada vehículo. ¿Cuál es el tiempo promedio que un vehículo pasa en el taller?</li>
-                    <li>Ejercicio 9: Una sala de espera tiene un solo recepcionista. Los visitantes llegan a la sala con una tasa promedio de 45 por hora. El recepcionista tarda en promedio 3 minutos en atender a cada visitante. ¿Cuál es la probabilidad de que haya al menos cinco visitantes esperando en la sala?</li>
-                    <li>Ejercicio 10: A una línea de espera llegan 20 unidades por hora y el promedio de servicio es de 30 unidades por hora, analizar la probabilidad de que el sistema no esté ocupado. ¿Cuál es el tiempo promedio de espera en cola?</li>
-                    <li>Ejercicio 11: La velocidad de llegada a un sistema es 2 unidades por hora y el factor de uso del sistema es del 50% Calcular el número promedio de unidades esperando en cola.</li>
-                    <li>Ejercicio 12: A un taller mecánico llegan autos para ser revisados con un promedio de 18 vehículos/hora. La dimensión del local hace que solo puedan ingresar 4 vehículos. El taller despacha un promedio de 6 autos/hora.</li>
-                    <li>Ejercicio 13: Un asesor tiene un local con 9 asientos. El cliente se va si no encuentra asientos libres. El tiempo promedio de llegada es 20 clientes por hora y lo atiende en 12 minutos en promedio.</li>
-                    <li>Ejercicio 14: A un maxikiosco llegan en promedio 5 clientes por hora. El tiempo de servicio promedio es de 10 minutos (a la tienda solo pueden entrar 3 clientes en forma simultánea)
-                        <ul>
-                            <li>A. Calcular la tasa de servicio promedio en clientes por hora mu=6 clientes/hora</li>
-                            <li>B. Calcular la tasa de utilización del sistema</li>
-                            <li>C. Calcular en promedio la longitud de la cola</li>
-                            <li>D. Tiempo promedio que un cliente paso en el sistema</li>
-                            <li>E. Calcular la probabilidad de que no haya clientes en el sistema</li>
-                        </ul> 
-                    </li>
-                    <li>Ejercicio 15: Un restaurante tiene 20 mesas. Los clientes llegan al restaurante a razón de 30 personas por hora y el tiempo promedio para atender a cada mesa es de 20 minutos.
-                        <ul>
-                            <li>A. Calcular el promedio de clientes en la cola.</li>
-                            <li>B. ¿Cuál es la probabilidad de que todas las mesas estén ocupadas?</li>
-                            <li>C. ¿Cuál es el tiempo promedio de permanencia de un cliente en el restaurante?</li>
-                            <li>D. ¿Cuál es el tiempo promedio de espera en cola?</li>
-                            <li>E. ¿Cuál es la probabilidad de que haya al menos 5 mesas ocupadas?</li>
-                            <li>F. ¿Cual es la probabilidad de que tenga como mucho 3 mesas ocupadas?</li>
-                        </ul> 
-                    </li>
-                    <li>Ejercicio 16: Un pequeño cine tiene una sala con capacidad para 50 personas. Los espectadores llegan al cine a razón de 10 personas por hora, y el tiempo promedio de atención en la taquilla es de 6 minutos.
-                        <ul>
-                            <li>A. ¿Cuál es la probabilidad de que la sala esté vacía?</li>
-                            <li>B. Calcular la longitud promedio de la cola.</li>
-                            <li>C. ¿Cuál es el promedio de personas en la sala?</li>
-                            <li>D. ¿Cuánto tiempo, en promedio, pasa un espectador en el cine?</li>
-                            <li>E. ¿Cuál es el tiempo promedio de espera en cola?</li>
-                        </ul> 
-                    </li>
-                    <li>Ejercicio 17: Una estación de bicicletas tiene capacidad para 10 bicicletas. Las bicicletas llegan a la estación a una tasa promedio de 8 por hora y el tiempo de servicio promedio para estacionar una bicicleta es de 5 minutos.
-                        <ul>
-                            <li>A. ¿Cuál es la longitud promedio de la cola?</li>
-                            <li>B. Calcular el promedio de bicicletas en la estación.</li>
-                            <li>C. ¿Cuánto tiempo, en promedio, una bicicleta está en la estación?</li>
-                            <li>D. ¿Cuál es el tiempo promedio de espera en cola?</li>
-                        </ul> 
-                    </li>
-                    <li>Ejercicio 18: Una tienda de ropa tiene un probador con capacidad para 3 clientes. Los clientes llegan al probador a razón de 10 por hora y el tiempo promedio de uso del probador es de 5 minutos.
-                        <ul>
-                            <li>A. Calcular el promedio de clientes en el probador.</li>
-                            <li>B. ¿Cuál es la probabilidad de que el probador esté vacío?</li>
-                            <li>C. ¿Cuánto tiempo, en promedio, un cliente pasa en la tienda?</li>
-                            <li>D. ¿Cuál es la longitud promedio de la cola?</li>
-                            <li>E. ¿Cuál es el tiempo promedio de espera en cola?</li>
-                        </ul> 
-                    </li>
-                    <li>Ejercicio 19: En una oficina de atención al cliente, dos empleados atienden a los visitantes. Los visitantes llegan con una tasa de 14 por hora. Cada empleado tarda en promedio 8 minutos en atender a un visitante. Calcula:
-                        <ul>
-                            <li>A. La probabilidad de que no haya clientes en la oficina</li>
-                            <li>B. La longitud promedio de la cola</li>
-                            <li>C. El tiempo promedio que un visitante pasa en cola</li>
-                        </ul> 
-                    </li>
-                    <li>Ejercicio 20: En un centro de llamadas, dos operadores atienden las llamadas entrantes. Las llamadas llegan con una tasa de 40 por hora. Cada operador puede atender una llamada en promedio en 2 minutos. Determina:
-                        <ul>
-                            <li>A. La tasa de utilización del sistema </li>
-                            <li>B. El número promedio de llamadas en espera.</li>
-                            <li>C. El tiempo promedio que una llamada pasa en el sistema</li>
-                            <li>D. La probabilidad de que ambos operadores estén ocupados.</li>
-                        </ul> 
-                    </li>
-                    <li>Ejercicio 21: En una librería, dos cajeros atienden a los clientes. Los clientes llegan a la librería con una tasa de 18 por hora. Cada cajero tarda en promedio 8 minutos en atender a un cliente. Determina:
-                        <ul>
-                            <li>A. La tasa de llegada </li>
-                            <li>B. La tasa de servicio</li>
-                            <li>C. La longitud promedio de la cola </li>
-                            <li>D. El tiempo promedio que un cliente pasa en la cola</li>
-                        </ul> 
-                    </li>
-                    <li>Ejercicio 22: En un aeropuerto, dos agentes de seguridad revisan el equipaje de los pasajeros. El primer agente de seguridad puede revisar un equipaje en promedio en 4 minutos y el segundo en 6 minutos. Los pasajeros llegan a una tasa de 30 por hora. Calcula:
-                        <ul>
-                            <li>A. La tasa de utilización del sistema </li>
-                            <li>B. El número promedio de pasajeros en cola</li>
-                            <li>C. El tiempo promedio que un pasajero pasa esperando en cola </li>
-                            <li>D. La probabilidad de que ambos agentes estén ocupados.</li>
-                        </ul> 
-                    </li>
-                    <li>Ejercicio 23: En una tienda de electrónicos, dos vendedores atienden a los clientes que llegan. El primer vendedor tarda en promedio 10 minutos en atender a un cliente y el segundo 5 minutos. Los clientes llegan con una tasa de 10 por hora. Calcula:
-                        <ul>
-                            <li>A. La tasa de utilización del sistema </li>
-                            <li>B. La probabilidad de que no haya clientes en la tienda</li>
-                            <li>C. El número promedio de clientes en el sistema</li>
-                            <li>D. El tiempo promedio que un cliente pasa en el sistema</li>
-                        </ul> 
-                    </li>
-                    <li>Ejercicio 24: En un taller mecánico, dos mecánicos atienden los vehículos que llegan para ser reparados. El primer mecánico tarda en promedio 8 minutos en reparar un vehículo y el segundo 12 minutos. Los vehículos llegan al taller con una tasa de 12 por hora. Calcula:
-                        <ul>
-                            <li>A. La probabilidad de que no haya vehículos en el taller </li>
-                            <li>B. El número promedio de vehículos en el taller</li>
-                            <li>C. El tiempo promedio que un vehículo pasa en el taller</li>
-                        </ul> 
-                    </li>
-                    <li>Ejercicio 25: En un centro de atención médica, se manejan dos tipos de pacientes: pacientes de emergencia (alta prioridad) y pacientes regulares (baja prioridad). Los pacientes de emergencia llegan al centro con una tasa de 4 pacientes por hora, mientras que los pacientes regulares llegan con una tasa de 12 pacientes por hora. El centro de atención tiene un médico que atiende a los pacientes según su prioridad. Los tiempos de servicio son exponenciales con una tasa de servicio de 8 pacientes por hora para cualquier tipo de paciente.
-                        <ul>
-                            <li>A. ¿Cuál es el tiempo promedio que un paciente de emergencia pasa en el  sistema? </li>
-                            <li>B. ¿Cuál es el tiempo de espera en cola de un paciente de emergencia?</li>
-                        </ul> 
-                    </li>
-                    <li>Ejercicio 26: Un hospital tiene un servicio de emergencias y un servicio regular. Los pacientes de emergencia tienen prioridad sobre los pacientes regulares. Los pacientes llegan al hospital con las siguientes tasas:
-                        <ul>
-                            <li> Los pacientes de emergencia llegan a una tasa de 5 pacientes por hora. </li>
-                            <li> Los pacientes regulares llegan a una tasa de 15 pacientes por hora.</li>
-                            <li> La tasa de servicio del hospital es de 10 pacientes por hora.</li>
-                            <ul>
-                                <li> A. La tasa de utilización del sistema </li>
-                                <li> B. El número promedio de pacientes en cola</li>
-                                <li> C. El tiempo promedio de espera en cola</li>
-                            </ul>
-                        </ul>
-                    </li>
-                    <li>Ejercicio 27: Un supermercado atiende con prioridades, los clientes de CLASE 1 (embarazadas y ancianos), los clientes de CLASE 2 (todos los restantes). En un momento dado hay un cliente CLASE 2 en la caja, al que le faltan 60 segundos para completar su atención, en cola hay 3 clientes CLASE 2 cuyos tiempos medios de servicio es 5 minutos y 2 clientes CLASE 1 cuyo tiempo medio de servicio es 4 minutos. Llega un nuevo cliente CLASE 1 ¿Cuánto deberá esperar en cola y cuánto permanecerá en el sistema? </li>
-                    <li>Ejercicio 28:En un centro de servicio técnico, los clientes llegan de forma aleatoria a una tasa promedio de 40 por hora. El tiempo que tarda cada técnico en resolver un caso no es constante, pero tiene una media de 1 minuto y un desvío estándar de 30 segundos. Solo hay un técnico disponible que atiende de a un cliente por vez y no hay interrupciones.
-                        <ul>
-                            <li>A. Calcular el número promedio de clientes en el sistema. </li>
-                            <li>B. Determinar el tiempo promedio que un cliente pasa en el sistema </li>
-                        </ul> 
-                    </li>
-                    <li>Ejercicio 29: Una fotocopiadora universitaria funciona con un solo empleado que atiende pedidos de alumnos que llegan con una tasa promedio de 30 por hora. El tiempo que tarda en realizar cada pedido no es constante, pero se sabe que el tiempo promedio de atención es de 1 minuto por pedido,y el desvío estándar del tiempo de atención es de 45 segundos.
-                        <ul>
-                            <li>A. La utilización del sistema</li>
-                            <li>B. Determinar el número promedio de clientes en el sistema</li>
-                            <li>C. Calcular el tiempo promedio en el sistema </li>
-                        </ul> 
-                    </li>
-                    <li>Ejercicio 30: En un laboratorio, los frascos llegan para ser etiquetados a razón de 20 por hora. El sistema tiene un solo operador que tarda exactamente 2 minutos en etiquetar cada frasco Se pide calcular:
-                        <ul>
-                            <li>A. La utilización del sistema </li>
-                            <li>B. El número promedio de frascos en el sistema</li>
-                            <li>C. El tiempo promedio que un frasco pasa en el sistema</li>
-                            <li>B. El tiempo promedio de espera en el sistema </li>
-                            <li>C. El número promedio de frascos en el sistema</li>
-                        </ul>
-                    </li>
-                    <li>Ejercicio 33: A un maxikiosco llegan en promedio 5 clientes por hora. El tiempo de servicio promedio es de 10 minutos (a la tienda solo pueden entrar 3 clientes en forma simultánea)
-                            <div class="input-group">
-                                <label for="mm2-mu1">Tiempo de servicio 1 (igual o más rápido - μ1)*</label>
-                                <input type="number" id="mm2-mu1" name="mu1" step="any" placeholder="Ingrese el tiempo de servicio 1" required>
-                            </div>
-                            
-                            <div class="input-group">
-                                <label for="mm2-mu2">Tiempo de servicio 2 (igual o más lento - μ2)*</label>
-                                <input type="number" id="mm2-mu2" name="mu2" step="any" placeholder="Ingrese el tiempo de servicio 2" required>
-                            <li>F. Decidir qué sistema conviene y justificar la respuesta</li>
-                            
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-            <!-- Página de calculadora para M/M/1 -->
-            <div id="mm1-page" class="page calculator-page">
+            <!-- M/M/1 Page -->
+            <div id="mm1-page" class="page">
                 <div class="page-container">
                     <div class="calculator-grid">
                         <div class="info-card">
-                            <h1 class="calculator-title">M/M/1</h1>
-                            <p class="calculator-description">El modelo M/M/1 es un modelo de colas que se caracteriza por tener un solo servidor y una sola fila de espera. La distribución de llegadas y de servicio son de tipo exponencial.</p>
+                            <h1 class="calculator-title">Modelo M/M/1</h1>
+                            <p class="calculator-description">
+                                El modelo M/M/1 representa un sistema de colas con llegadas que siguen un proceso de Poisson, 
+                                tiempos de servicio exponenciales y un solo servidor. Es el modelo más básico y fundamental 
+                                en la teoría de colas.
+                            </p>
                         </div>
+                        
+                        <div class="form-card">
+                            <form id="mm1-form" class="calculator-form">
+                                <div class="input-group">
+                                    <label for="mm1-lambda">Tasa de llegadas (λ)</label>
+                                    <input type="number" id="mm1-lambda" name="lambda" step="0.01" min="0" placeholder="Ej: 5">
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label for="mm1-mu">Tasa de servicio (μ)</label>
+                                    <input type="number" id="mm1-mu" name="mu" step="0.01" min="0" placeholder="Ej: 8">
+                                </div>
+
+                                <div class="input-group">
+                                    <label for="mm1-pax">Calcular P(≥x) para x = (opcional)</label>
+                                    <input type="number" id="mm1-pax" name="pax" step="1" min="0" placeholder="Ej: 3">
+                                </div>
+
+                                <div class="input-group">
+                                    <label for="mm1-pn">Calcular P(n) para n = (opcional)</label>
+                                    <input type="number" id="mm1-pn" name="pn" step="1" min="0" placeholder="Ej: 2">
+                                </div>
+                                
+                                <button type="submit" class="calculate-btn">Calcular</button>
+                                <div id="mm1-error" class="error-message"></div>
+                            </form>
+                        </div>
+
                         <div class="time-converter-card">
                             <h3 class="converter-title">Conversor de Tiempo</h3>
                             <div class="converter-form">
                                 <div class="converter-row">
                                     <div class="converter-input-group">
-                                        <label>Valor</label>
-                                        <input type="number" id="mm1-converter-value" step="any" min="0" placeholder="Ingrese el valor">
+                                        <label>Valor:</label>
+                                        <input type="number" id="mm1-converter-value" step="0.000001" min="0" placeholder="0">
                                     </div>
                                 </div>
                                 <div class="converter-selects">
                                     <div class="converter-select-group">
-                                        <label>De</label>
+                                        <label>De:</label>
                                         <select id="mm1-converter-from">
                                             <option value="seconds">Segundos</option>
                                             <option value="minutes">Minutos</option>
@@ -357,7 +190,7 @@
                                         </select>
                                     </div>
                                     <div class="converter-select-group">
-                                        <label>A</label>
+                                        <label>A:</label>
                                         <select id="mm1-converter-to">
                                             <option value="seconds">Segundos</option>
                                             <option value="minutes">Minutos</option>
@@ -370,50 +203,74 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-card full-width">
-                            <!-- Formulario para ingresar los parámetros del modelo -->
-                            <form id="mm1-form" class="calculator-form">
-                                <div class="input-group">
-                                    <label>Tasa de arribos (λ)*</label>
-                                    <input type="number" name="lambda" step="any" min="0" placeholder="Ingrese la tasa de arribos" required>
-                                </div>
-                                <div class="input-group">
-                                    <label>Tiempo de servicio (μ)*</label>
-                                    <input type="number" name="mu" step="any" min="0" placeholder="Ingrese el tiempo de servicio" required>
-                                </div>
-                                <div class="error-message" id="mm1-error"></div>
-                                <button type="submit" class="calculate-btn">Calcular</button>
-                            </form>
-                        </div>
                     </div>
-                    <!-- Sección para mostrar los resultados del cálculo -->
+                    
                     <div id="mm1-results" class="results-section" style="display: none;">
                         <h2 class="results-title">Resultados</h2>
-                        <div class="results-grid" id="mm1-results-grid"></div>
+                        <div id="mm1-results-grid" class="results-grid"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Página de calculadora para M/M/2 -->
-            <div id="mm2-page" class="page calculator-page">
+            <!-- M/M/2 Page -->
+            <div id="mm2-page" class="page">
                 <div class="page-container">
                     <div class="calculator-grid">
                         <div class="info-card">
-                            <h1 class="calculator-title">M/M/2</h1>
-                            <p class="calculator-description">El modelo M/M/2 es un sistema con dos servidores en paralelo. Los clientes llegan según un proceso de Poisson y el tiempo de servicio de cada servidor sigue una distribución exponencial.</p>
+                            <h1 class="calculator-title">Modelo M/M/2</h1>
+                            <p class="calculator-description">
+                                El modelo M/M/2 representa un sistema de colas con llegadas que siguen un proceso de Poisson, 
+                                tiempos de servicio exponenciales y dos servidores que pueden ser idénticos o diferentes.
+                            </p>
                         </div>
+                        
+                        <div class="form-card">
+                            <form id="mm2-form" class="calculator-form">
+                                <div class="input-group">
+                                    <label for="mm2-calculation-type">Tipo de cálculo</label>
+                                    <select id="mm2-calculation-type" name="calculationType">
+                                        <option value="standard">Cálculo estándar</option>
+                                        <option value="evaluate-third">Evaluar agregar 3er servidor</option>
+                                    </select>
+                                </div>
+
+                                <div class="input-group">
+                                    <label for="mm2-lambda">Tasa de llegadas (λ)</label>
+                                    <input type="number" id="mm2-lambda" name="lambda" step="0.01" min="0" placeholder="Ej: 10">
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label for="mm2-mu1">Tasa de servicio servidor 1 (μ₁)</label>
+                                    <input type="number" id="mm2-mu1" name="mu1" step="0.01" min="0" placeholder="Ej: 6">
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label for="mm2-mu2">Tasa de servicio servidor 2 (μ₂)</label>
+                                    <input type="number" id="mm2-mu2" name="mu2" step="0.01" min="0" placeholder="Ej: 8">
+                                </div>
+
+                                <div class="input-group">
+                                    <label for="mm2-pn">Calcular P(n) para n = (opcional)</label>
+                                    <input type="number" id="mm2-pn" name="pn" step="1" min="0" placeholder="Ej: 2">
+                                </div>
+                                
+                                <button type="submit" class="calculate-btn">Calcular</button>
+                                <div id="mm2-error" class="error-message"></div>
+                            </form>
+                        </div>
+
                         <div class="time-converter-card">
                             <h3 class="converter-title">Conversor de Tiempo</h3>
                             <div class="converter-form">
                                 <div class="converter-row">
                                     <div class="converter-input-group">
-                                        <label>Valor</label>
-                                        <input type="number" id="mm2-converter-value" step="any" min="0" placeholder="Ingrese el valor">
+                                        <label>Valor:</label>
+                                        <input type="number" id="mm2-converter-value" step="0.000001" min="0" placeholder="0">
                                     </div>
                                 </div>
                                 <div class="converter-selects">
                                     <div class="converter-select-group">
-                                        <label>De</label>
+                                        <label>De:</label>
                                         <select id="mm2-converter-from">
                                             <option value="seconds">Segundos</option>
                                             <option value="minutes">Minutos</option>
@@ -421,7 +278,7 @@
                                         </select>
                                     </div>
                                     <div class="converter-select-group">
-                                        <label>A</label>
+                                        <label>A:</label>
                                         <select id="mm2-converter-to">
                                             <option value="seconds">Segundos</option>
                                             <option value="minutes">Minutos</option>
@@ -434,75 +291,62 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-card full-width">
-                            <form id="mm2-form" class="calculator-form">
-                                <div class="input-group">
-                                    <label for="mm2-calculation-type">Tipo de cálculo:</label>
-                                    <select id="mm2-calculation-type" name="calculationType">
-                                        <option value="standard">Cálculo estándar M/M/2</option>
-                                        <option value="evaluate-third">Evaluar tercer servidor</option>
-                                    </select>
-                                </div>
-                                
-                                <div id="mm2-third-server-note" class="calculation-note" style="display: none;">
-                                    <p><strong>💡 Importante:</strong> Usar siempre la misma unidad de tiempo para λ y μ (por minuto, por hora, etc.). Los tiempos de espera se expresan en esa misma unidad.</p>
-                                </div>
-
-                                <div class="input-group">
-                                    <label>Tasa de arribos (λ)*</label>
-                                    <input type="number" name="lambda" step="any" min="0" placeholder="Ingrese la tasa de arribos" required>
-                                </div>
-                                <div class="input-group">
-                                    <label>Tiempo de servicio 1 (igual o más rápido - μ1)*</label>
-                                    <input type="number" name="mu1" step="any" min="0" placeholder="Ingrese el tiempo de servicio 1" required>
-                                </div>
-                                <div class="input-group">
-                                    <label>Tiempo de servicio 2 (igual o más lento - μ2)*</label>
-                                    <input type="number" name="mu2" step="any" min="0" placeholder="Ingrese el tiempo de servicio 2" required>
-                                </div>
-                                
-                                <div id="mm2-mu-actual-group" class="input-group" style="display: none;">
-                                    <label for="mm2-mu-actual">μ actual*</label>
-                                    <input type="number" id="mm2-mu-actual" name="muActual" step="any" min="0" placeholder="Ingrese μ actual">
-                                </div>
-                                
-                                <div id="mm2-mu3-group" class="input-group" style="display: none;">
-                                    <label for="mm2-mu3">μ₃ (tercer servidor)</label>
-                                    <input type="number" id="mm2-mu3" name="mu3" step="any" min="0" placeholder="Ingrese μ del tercer servidor">
-                                </div>
-
-                                <div class="error-message" id="mm2-error"></div>
-                                <button type="submit" class="calculate-btn">Calcular</button>
-                            </form>
-                        </div>
                     </div>
+                    
                     <div id="mm2-results" class="results-section" style="display: none;">
                         <h2 class="results-title">Resultados</h2>
-                        <div class="results-grid" id="mm2-results-grid"></div>
+                        <div id="mm2-results-grid" class="results-grid"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Página de calculadora para M/M/1/N -->
-            <div id="mm1n-page" class="page calculator-page">
+            <!-- M/M/1/N Page -->
+            <div id="mm1n-page" class="page">
                 <div class="page-container">
                     <div class="calculator-grid">
                         <div class="info-card">
-                            <h1 class="calculator-title">M/M/1/N</h1>
-                            <p class="calculator-description">El modelo M/M/1/N es una variación del modelo M/M/1 con capacidad limitada. El sistema puede contener máximo N clientes (incluyendo el que está siendo atendido). Si llega un cliente cuando el sistema está lleno, es rechazado.</p>
+                            <h1 class="calculator-title">Modelo M/M/1/N</h1>
+                            <p class="calculator-description">
+                                El modelo M/M/1/N es una variación del M/M/1 con capacidad limitada. El sistema puede 
+                                contener máximo N clientes (incluyendo el que está siendo servido). Los clientes que 
+                                llegan cuando el sistema está lleno son rechazados.
+                            </p>
                         </div>
+                        
+                        <div class="form-card">
+                            <form id="mm1n-form" class="calculator-form">
+                                <div class="input-group">
+                                    <label for="mm1n-lambda">Tasa de llegadas (λ)</label>
+                                    <input type="number" id="mm1n-lambda" name="lambda" step="0.01" min="0" placeholder="Ej: 5">
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label for="mm1n-mu">Tasa de servicio (μ)</label>
+                                    <input type="number" id="mm1n-mu" name="mu" step="0.01" min="0" placeholder="Ej: 8">
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label for="mm1n-N">Capacidad máxima (N)</label>
+                                    <input type="number" id="mm1n-N" name="N" step="1" min="1" placeholder="Ej: 10">
+                                </div>
+                                
+                                <button type="submit" class="calculate-btn">Calcular</button>
+                                <div id="mm1n-error" class="error-message"></div>
+                            </form>
+                        </div>
+
                         <div class="time-converter-card">
                             <h3 class="converter-title">Conversor de Tiempo</h3>
                             <div class="converter-form">
                                 <div class="converter-row">
                                     <div class="converter-input-group">
-                                        <label>Valor</label>
-                                        <input type="number" id="mm1n-converter-value" step="any" min="0" placeholder="Ingrese el valor">
+                                        <label>Valor:</label>
+                                        <input type="number" id="mm1n-converter-value" step="0.000001" min="0" placeholder="0">
                                     </div>
                                 </div>
                                 <div class="converter-selects">
                                     <div class="converter-select-group">
-                                        <label>De</label>
+                                        <label>De:</label>
                                         <select id="mm1n-converter-from">
                                             <option value="seconds">Segundos</option>
                                             <option value="minutes">Minutos</option>
@@ -510,7 +354,7 @@
                                         </select>
                                     </div>
                                     <div class="converter-select-group">
-                                        <label>A</label>
+                                        <label>A:</label>
                                         <select id="mm1n-converter-to">
                                             <option value="seconds">Segundos</option>
                                             <option value="minutes">Minutos</option>
@@ -523,52 +367,71 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-card full-width">
-                            <form id="mm1n-form" class="calculator-form">
-                                <div class="input-group">
-                                    <label>Tasa de arribos (λ)*</label>
-                                    <input type="number" name="lambda" step="any" min="0" placeholder="Ingrese la tasa de arribos" required>
-                                </div>
-                                <div class="input-group">
-                                    <label>Tiempo de servicio (μ)*</label>
-                                    <input type="number" name="mu" step="any" min="0" placeholder="Ingrese el tiempo de servicio" required>
-                                </div>
-                                <div class="input-group">
-                                    <label>Capacidad máxima (N)*</label>
-                                    <input type="number" name="N" min="1" placeholder="Ingrese la capacidad máxima (número entero)" required>
-                                </div>
-                                <div class="error-message" id="mm1n-error"></div>
-                                <button type="submit" class="calculate-btn">Calcular</button>
-                            </form>
-                        </div>
                     </div>
+                    
                     <div id="mm1n-results" class="results-section" style="display: none;">
                         <h2 class="results-title">Resultados</h2>
-                        <div class="results-grid" id="mm1n-results-grid"></div>
+                        <div id="mm1n-results-grid" class="results-grid"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Página de calculadora para M/G/1 -->
-            <div id="mg1-page" class="page calculator-page">
+            <!-- M/G/1 Page -->
+            <div id="mg1-page" class="page">
                 <div class="page-container">
                     <div class="calculator-grid">
                         <div class="info-card">
-                            <h1 class="calculator-title">M/G/1</h1>
-                            <p class="calculator-description">El modelo M/G/1 tiene llegadas Poisson pero el tiempo de servicio sigue una distribución general. Este modelo utiliza la fórmula de Pollaczek-Khinchine para calcular las métricas del sistema.</p>
+                            <h1 class="calculator-title">Modelo M/G/1</h1>
+                            <p class="calculator-description">
+                                El modelo M/G/1 representa un sistema con llegadas Poisson, distribución de servicio 
+                                general y un servidor. Utiliza la fórmula de Pollaczek-Khinchine para calcular las métricas.
+                            </p>
                         </div>
+                        
+                        <div class="form-card">
+                            <form id="mg1-form" class="calculator-form">
+                                <div class="input-group">
+                                    <label for="mg1-lambda">Tasa de llegadas (λ)</label>
+                                    <input type="number" id="mg1-lambda" name="lambda" step="0.01" min="0" placeholder="Ej: 5">
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label for="mg1-mu">Tasa de servicio (μ)</label>
+                                    <input type="number" id="mg1-mu" name="mu" step="0.01" min="0" placeholder="Ej: 8">
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label for="mg1-sigma">Desviación estándar del servicio (σ) - opcional</label>
+                                    <input type="number" id="mg1-sigma" name="sigma" step="0.01" min="0" placeholder="Ej: 0.125">
+                                </div>
+
+                                <div class="input-group">
+                                    <label for="mg1-pax">Calcular P(≥x) para x = (opcional)</label>
+                                    <input type="number" id="mg1-pax" name="pax" step="1" min="0" placeholder="Ej: 3">
+                                </div>
+
+                                <div class="input-group">
+                                    <label for="mg1-pn">Calcular P(n) para n = (opcional)</label>
+                                    <input type="number" id="mg1-pn" name="pn" step="1" min="0" placeholder="Ej: 2">
+                                </div>
+                                
+                                <button type="submit" class="calculate-btn">Calcular</button>
+                                <div id="mg1-error" class="error-message"></div>
+                            </form>
+                        </div>
+
                         <div class="time-converter-card">
                             <h3 class="converter-title">Conversor de Tiempo</h3>
                             <div class="converter-form">
                                 <div class="converter-row">
                                     <div class="converter-input-group">
-                                        <label>Valor</label>
-                                        <input type="number" id="mg1-converter-value" step="any" min="0" placeholder="Ingrese el valor">
+                                        <label>Valor:</label>
+                                        <input type="number" id="mg1-converter-value" step="0.000001" min="0" placeholder="0">
                                     </div>
                                 </div>
                                 <div class="converter-selects">
                                     <div class="converter-select-group">
-                                        <label>De</label>
+                                        <label>De:</label>
                                         <select id="mg1-converter-from">
                                             <option value="seconds">Segundos</option>
                                             <option value="minutes">Minutos</option>
@@ -576,7 +439,7 @@
                                         </select>
                                     </div>
                                     <div class="converter-select-group">
-                                        <label>A</label>
+                                        <label>A:</label>
                                         <select id="mg1-converter-to">
                                             <option value="seconds">Segundos</option>
                                             <option value="minutes">Minutos</option>
@@ -589,52 +452,71 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-card full-width">
-                            <form id="mg1-form" class="calculator-form">
-                                <div class="input-group">
-                                    <label>Tasa de arribos (λ)*</label>
-                                    <input type="number" name="lambda" step="any" min="0" placeholder="Ingrese la tasa de arribos" required>
-                                </div>
-                                <div class="input-group">
-                                    <label>Tiempo de servicio (μ)*</label>
-                                    <input type="number" name="mu" step="any" min="0" placeholder="Ingrese el tiempo de servicio" required>
-                                </div>
-                                <div class="input-group">
-                                    <label>Desvío estándar (σ)</label>
-                                    <input type="number" name="sigma" step="any" min="0" placeholder="Ingrese el desvío estándar">
-                                </div>
-                                <div class="error-message" id="mg1-error"></div>
-                                <button type="submit" class="calculate-btn">Calcular</button>
-                            </form>
-                        </div>
                     </div>
+                    
                     <div id="mg1-results" class="results-section" style="display: none;">
                         <h2 class="results-title">Resultados</h2>
-                        <div class="results-grid" id="mg1-results-grid"></div>
+                        <div id="mg1-results-grid" class="results-grid"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Página de calculadora para M/D/1 -->
-            <div id="md1-page" class="page calculator-page">
+            <!-- M/D/1 Page -->
+            <div id="md1-page" class="page">
                 <div class="page-container">
                     <div class="calculator-grid">
                         <div class="info-card">
-                            <h1 class="calculator-title">M/D/1</h1>
-                            <p class="calculator-description">El modelo M/D/1 tiene llegadas Poisson y tiempo de servicio determinístico (constante). Este es un caso especial del modelo M/G/1 donde la varianza del tiempo de servicio es cero.</p>
+                            <h1 class="calculator-title">Modelo M/D/1</h1>
+                            <p class="calculator-description">
+                                El modelo M/D/1 representa un sistema con llegadas Poisson, tiempo de servicio 
+                                determinístico (constante) y un servidor. Es un caso especial del M/G/1.
+                            </p>
                         </div>
+                        
+                        <div class="form-card">
+                            <form id="md1-form" class="calculator-form">
+                                <div class="input-group">
+                                    <label for="md1-lambda">Tasa de llegadas (λ)</label>
+                                    <input type="number" id="md1-lambda" name="lambda" step="0.01" min="0" placeholder="Ej: 5">
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label for="md1-mu">Tasa de servicio (μ) - opcional</label>
+                                    <input type="number" id="md1-mu" name="mu" step="0.01" min="0" placeholder="Ej: 8">
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label for="md1-es">Tiempo esperado de servicio E(s) - opcional</label>
+                                    <input type="number" id="md1-es" name="sigma" step="0.01" min="0" placeholder="Ej: 0.125">
+                                </div>
+
+                                <div class="input-group">
+                                    <label for="md1-pax">Calcular P(≥x) para x = (opcional)</label>
+                                    <input type="number" id="md1-pax" name="pax" step="1" min="0" placeholder="Ej: 3">
+                                </div>
+
+                                <div class="input-group">
+                                    <label for="md1-pn">Calcular P(n) para n = (opcional)</label>
+                                    <input type="number" id="md1-pn" name="pn" step="1" min="0" placeholder="Ej: 2">
+                                </div>
+                                
+                                <button type="submit" class="calculate-btn">Calcular</button>
+                                <div id="md1-error" class="error-message"></div>
+                            </form>
+                        </div>
+
                         <div class="time-converter-card">
                             <h3 class="converter-title">Conversor de Tiempo</h3>
                             <div class="converter-form">
                                 <div class="converter-row">
                                     <div class="converter-input-group">
-                                        <label>Valor</label>
-                                        <input type="number" id="md1-converter-value" step="any" min="0" placeholder="Ingrese el valor">
+                                        <label>Valor:</label>
+                                        <input type="number" id="md1-converter-value" step="0.000001" min="0" placeholder="0">
                                     </div>
                                 </div>
                                 <div class="converter-selects">
                                     <div class="converter-select-group">
-                                        <label>De</label>
+                                        <label>De:</label>
                                         <select id="md1-converter-from">
                                             <option value="seconds">Segundos</option>
                                             <option value="minutes">Minutos</option>
@@ -642,7 +524,7 @@
                                         </select>
                                     </div>
                                     <div class="converter-select-group">
-                                        <label>A</label>
+                                        <label>A:</label>
                                         <select id="md1-converter-to">
                                             <option value="seconds">Segundos</option>
                                             <option value="minutes">Minutos</option>
@@ -655,71 +537,60 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-card full-width">
-                            <form id="md1-form" class="calculator-form">
-                                <div class="input-group">
-                                    <label>Tasa de arribos (λ)*</label>
-                                    <input type="number" name="lambda" step="any" min="0" placeholder="Ingrese la tasa de arribos" required>
-                                </div>
-                                <div class="input-group">
-                                    <label>Tiempo de servicio (μ)*</label>
-                                    <input type="number" name="mu" step="any" min="0" placeholder="Ingrese el tiempo de servicio" required>
-                                </div>
-                                <div class="error-message" id="md1-error"></div>
-                                <button type="submit" class="calculate-btn">Calcular</button>
-                            </form>
-                        </div>
                     </div>
+                    
                     <div id="md1-results" class="results-section" style="display: none;">
                         <h2 class="results-title">Resultados</h2>
-                        <div class="results-grid" id="md1-results-grid"></div>
+                        <div id="md1-results-grid" class="results-grid"></div>
                     </div>
                 </div>
             </div>
 
-<!-- Página de calculadora Prioridades -->
-<div id="priority-page" class="page calculator-page">
-    <div class="page-container">
-        <div class="calculator-grid">
-            <div class="info-card">
-                <h1 class="calculator-title">M/M/1 con Prioridades (PR)</h1>
-                <p class="calculator-description">
-                    Calcula métricas para un sistema M/M/1 con prioridad preemptive-resume. 
-                    Clase 1 tiene mayor prioridad. Usa la misma unidad de tiempo para todas las tasas (ejemplo: por minuto, por hora).
-                </p>
+            <!-- Priority Page -->
+            <div id="priority-page" class="page">
+                <div class="page-container">
+                    <div class="calculator-grid">
+                        <div class="info-card">
+                            <h1 class="calculator-title">Modelo de Prioridades M/M/1</h1>
+                            <p class="calculator-description">
+                                Sistema M/M/1 con dos clases de prioridad no expulsiva. La Clase 1 tiene prioridad 
+                                sobre la Clase 2. Los clientes de menor prioridad esperan hasta que no haya clientes 
+                                de mayor prioridad en el sistema.
+                            </p>
+                        </div>
+                        
+                        <div class="form-card">
+                            <form id="priority-form" class="calculator-form">
+                                <div class="input-group">
+                                    <label for="priority-lambda1">Tasa de llegadas Clase 1 (λ₁)</label>
+                                    <input type="number" id="priority-lambda1" name="lambda1" step="0.01" min="0" placeholder="Ej: 3">
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label for="priority-lambda2">Tasa de llegadas Clase 2 (λ₂)</label>
+                                    <input type="number" id="priority-lambda2" name="lambda2" step="0.01" min="0" placeholder="Ej: 2">
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label for="priority-mu">Tasa de servicio (μ)</label>
+                                    <input type="number" id="priority-mu" name="mu" step="0.01" min="0" placeholder="Ej: 8">
+                                </div>
+                                
+                                <button type="submit" class="calculate-btn">Calcular</button>
+                                <div id="priority-error" class="error-message"></div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div id="priority-results" class="results-section" style="display: none;">
+                        <h2 class="results-title">Resultados Generales</h2>
+                        <div id="priority-results-grid" class="results-grid"></div>
+                        
+                        <h3 class="results-title" style="margin-top: 2rem;">Resultados por Clase</h3>
+                        <div id="priority-class-grid" class="results-grid"></div>
+                    </div>
+                </div>
             </div>
-            <div class="form-card full-width">
-                <form id="priority-form" class="calculator-form">
-                    <div class="input-group">
-                        <label>λ₁ (Clase 1)*</label>
-                        <input type="number" name="lambda1" step="any" min="0" required>
-                    </div>
-                    <div class="input-group">
-                        <label>λ₂ (Clase 2)*</label>
-                        <input type="number" name="lambda2" step="any" min="0" required>
-                    </div>
-                    <div class="input-group">
-                        <label>μ (Tasa de servicio)*</label>
-                        <input type="number" name="mu" step="any" min="0" required>
-                    </div>
-                    <div class="error-message" id="priority-error"></div>
-                    <button type="submit" class="calculate-btn">Calcular</button>
-                </form>
-            </div>
-        </div>
-        <div id="priority-results" class="results-section" style="display:none;">
-            <h2 class="results-title">Resultados</h2>
-            <div class="results-grid" id="priority-results-grid"></div>
-
-            <h3 class="results-subtitle" style="margin-top:24px;">Por Clase</h3>
-            <div class="results-grid" id="priority-class-grid"></div>
-        </div>
-    </div>
-</div>
-
-
-
-
         </main>
     </div>
 
