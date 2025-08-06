@@ -138,61 +138,50 @@ class QueueCalculations {
     }
 
     // Modelo M/M/2 
-static calculateMM2Updated({ lambda, mu1, mu2, pn }) {
-    // Reordenamos para identificar el servidor más rápido/lento
-    const mu_fast = Math.max(mu1, mu2);
-    const mu_slow = Math.min(mu1, mu2);
-    const mu_sum  = mu_fast + mu_slow; // tasa combinada cuando hay ≥2 en el sistema
-  
-    if (lambda <= 0 || mu_fast <= 0 || mu_slow <= 0) {
-      throw new Error('λ, μ1 y μ2 deben ser mayores que 0');
-    }
-    if (lambda >= mu_sum) {
-      throw new Error('El sistema es inestable: λ debe ser menor que μ1 + μ2');
-    }
-  
-    // Utilización total del sistema
-    const rho = lambda / mu_sum;       
-    const r   = lambda / mu_sum;       
-  
-    const P0 = 1 / (1 + (lambda / mu_fast) / (1 - r));
-  
-    
-    const P1 = (lambda / mu_fast) * P0;
-  
-   
-    const L  = (lambda / mu_fast) * P0 / ((1 - r) * (1 - r));
-  
-    //  promedio en servicio
-    const Ls = P1 + 2 * (1 - P0 - P1);
-  
-    // Cola promedio y tiempos
-    const Lq = L - Ls;
-    const Wq = Lq / lambda;
-    const W  = L  / lambda;
-  
-    const results = { rho, P0, L, Lq, W, Wq };
-  
-    // Pn opcional
-    if (pn !== undefined && pn !== null && pn !== '') {
-      const n = parseInt(pn, 10);
-      if (!isNaN(n) && n >= 0) {
-        let PnValue;
-        if (n === 0) {
-          PnValue = P0;
-        } else if (n === 1) {
-          PnValue = P1;
-        } else {
-          // Para n≥2: Pn = (λ/μ_fast) * P0 * r^{n-1}
-          PnValue = (lambda / mu_fast) * P0 * Math.pow(r, n - 1);
+    static calculateMM2({ lambda, mu1, mu2, pn }) {
+        if (lambda <= 0 || mu1 <= 0 || mu2 <= 0) {
+            throw new Error('λ, μ1 y μ2 deben ser mayores que 0');
         }
-        results.PnValue = PnValue;
-      }
+        
+        const muSum = mu1 + mu2;
+        if (lambda >= muSum) {
+            throw new Error('El sistema es inestable: λ debe ser menor que μ1 + μ2');
+        }
+        
+        const rho = lambda / muSum;
+        const rho1 = lambda / mu1;
+        const rho2 = lambda / mu2;
+        
+        // Probabilidades de estado
+        const P0 = 1 / (1 + rho1 + (rho1 * rho2) / (1 - rho));
+        const P1 = rho1 * P0;
+        
+        // Métricas del sistema
+        const L = rho1 * P0 / (1 - rho) + rho;
+        const Lq = L - (lambda / muSum) * (1 - P0);
+        const W = L / lambda;
+        const Wq = Lq / lambda;
+        
+        let results = { rho, P0, L, Lq, W, Wq };
+        
+        // Calcular Pn si se proporciona
+        if (pn !== undefined && pn !== null && pn !== '') {
+            const n = parseInt(pn, 10);
+            if (!isNaN(n) && n >= 0) {
+                let PnValue;
+                if (n === 0) {
+                    PnValue = P0;
+                } else if (n === 1) {
+                    PnValue = P1;
+                } else {
+                    PnValue = rho1 * P0 * Math.pow(rho, n - 1);
+                }
+                results.PnValue = PnValue;
+            }
+        }
+        
+        return results;
     }
-  
-    return results;
-  }
-  
 
     // Modelo M/M/1/N (capacidad finita)
     static calculateMM1N({ lambda, mu, N }) {
@@ -542,7 +531,7 @@ class CalculatorManager {
                 const lambda2 = inputs.lambda2 || 0;
                 const mu = inputs.mu;
     
-                if ((lambda1 <= 0 && lambda2 <= 0)) {
+                if (lambda1 <= 0 && lambda2 <= 0) {
                     throw new Error('Al menos una de las tasas de arribos (λ₁ o λ₂) debe ser mayor que 0');
                 }
                 if (!mu || mu <= 0) {
@@ -575,26 +564,6 @@ class CalculatorManager {
                 }
             }
 
-            if (model === 'priority') {
-                const lambda1 = inputs.lambda1 || 0;
-                const lambda2 = inputs.lambda2 || 0;
-                const mu = inputs.mu;
-            
-                if (lambda1 <= 0 && lambda2 <= 0) {
-                    throw new Error('Al menos una de las tasas de arribos (λ₁ o λ₂) debe ser mayor que 0');
-                }
-                if (!mu || mu <= 0) {
-                    throw new Error('La tasa de servicio (μ) es obligatoria y debe ser mayor que 0');
-                }
-                const rhoTotal = (lambda1 + lambda2) / mu;
-                if (rhoTotal >= 1) {
-                    throw new Error('El sistema es inestable: (λ₁ + λ₂) debe ser menor que μ');
-                }
-            } else {
-                // (deja validaciones existentes para los otros modelos)
-            }
-            
-
             // Cálculo por modelo
             let results;
             switch (model) {
@@ -602,7 +571,7 @@ class CalculatorManager {
                     results = QueueCalculations.calculateMM1Updated(inputs);
                     break;
                 case 'mm2':
-                    results = QueueCalculations.calculateMM2Updated(inputs);
+                    results = QueueCalculations.calculateMM2(inputs);
                     break;
                 case 'mm1n':
                     results = QueueCalculations.calculateMM1N(inputs);
@@ -613,13 +582,13 @@ class CalculatorManager {
                 case 'md1':
                     results = QueueCalculations.calculateMD1(inputs);
                     break;
-                    case 'priority':
-                        results = QueueCalculations.calculateMM1PriorityPR({
-                            lambda1: inputs.lambda1 || 0,
-                            lambda2: inputs.lambda2 || 0,
-                            mu: inputs.mu
-                        });
-                        break;                    
+                case 'priority':
+                    results = QueueCalculations.calculateMM1PriorityPR({
+                        lambda1: inputs.lambda1 || 0,
+                        lambda2: inputs.lambda2 || 0,
+                        mu: inputs.mu
+                    });
+                    break;                    
                 default:
                     throw new Error('Modelo no reconocido');
             }
