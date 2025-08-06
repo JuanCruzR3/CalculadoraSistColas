@@ -517,90 +517,103 @@ class CalculatorManager {
     }
 
     handleFormSubmit(e, model) {
-        e.preventDefault(); // Evita recargar la página
-        try {
-            // Lee los datos del formulario y los convierte a números
-            const formData = new FormData(e.target);
-            const inputs = {};
-    
-            for (let [key, value] of formData.entries()) {
-                if (value.trim() !== '') {
+    e.preventDefault(); // Evita recargar la página
+    try {
+        const formData = new FormData(e.target);
+        const inputs = {};
+
+        for (let [key, value] of formData.entries()) {
+            if (value.trim() !== '') {
+                // 👉 Si es calculationType, lo dejamos como texto
+                if (key === 'calculationType') {
+                    inputs[key] = value;
+                } else {
                     const numValue = parseFloat(value);
                     if (isNaN(numValue) || numValue < 0) {
                         throw new Error(`Por favor ingrese un valor válido para ${key}`);
                     }
                     inputs[key] = numValue;
-                } else {
-                    inputs[key] = null; // campos opcionales
                 }
+            } else {
+                inputs[key] = null; // campos opcionales
             }
-
-            // Validaciones específicas por modelo
-            if (model === 'priority') {
-                const lambda1 = inputs.lambda1 || 0;
-                const lambda2 = inputs.lambda2 || 0;
-                const mu = inputs.mu;
-    
-                if (lambda1 <= 0 && lambda2 <= 0) {
-                    throw new Error('Al menos una de las tasas de arribos (λ₁ o λ₂) debe ser mayor que 0');
-                }
-                if (!mu || mu <= 0) {
-                    throw new Error('La tasa de servicio (μ) es obligatoria y debe ser mayor que 0');
-                }
-    
-                const rhoTotal = (lambda1 + lambda2) / mu;
-                if (rhoTotal >= 1) {
-                    throw new Error('El sistema es inestable: (λ₁ + λ₂) debe ser menor que μ');
-                }
-            } else if (model !== 'mm2') {
-                // Validaciones para otros modelos
-                if (!inputs.lambda || inputs.lambda <= 0) {
-                    throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
-                }
-                if (!inputs.mu || inputs.mu <= 0) {
-                    throw new Error('La tasa de servicio (μ) es obligatorio y debe ser mayor que 0');
-                }
-                if (model === 'mm1n' && (!inputs.N || inputs.N <= 0)) {
-                    throw new Error('La capacidad máxima (N) es obligatoria y debe ser mayor que 0');
-                }
-            }
-
-            // Cálculo por modelo
-            let results;
-            switch (model) {
-                case 'mm1':
-                    results = QueueCalculations.calculateMM1Updated(inputs);
-                    break;
-                case 'mm2':
-                    results = QueueCalculations.calculateMM2(inputs);
-                    break;
-                case 'mm1n':
-                    results = QueueCalculations.calculateMM1N(inputs);
-                    break;
-                case 'mg1':
-                    results = QueueCalculations.calculateMG1(inputs);
-                    break;
-                case 'md1':
-                    results = QueueCalculations.calculateMD1(inputs);
-                    break;
-                case 'priority':
-                    results = QueueCalculations.calculateMM1PriorityPR({
-                        lambda1: inputs.lambda1 || 0,
-                        lambda2: inputs.lambda2 || 0,
-                        mu: inputs.mu
-                    });
-                    break;                    
-                default:
-                    throw new Error('Modelo no reconocido');
-            }
-    
-            this.displayResults(model, results); // Muestra los resultados
-            this.hideError(model);               // Oculta errores previos
-        } catch (error) {
-            this.showError(model, error.message); // Muestra el error
-            this.hideResults(model);              // Oculta resultados previos
         }
+
+        // Validaciones específicas por modelo
+        if (model === 'priority') {
+            const lambda1 = inputs.lambda1 || 0;
+            const lambda2 = inputs.lambda2 || 0;
+            const mu = inputs.mu;
+
+            if (lambda1 <= 0 && lambda2 <= 0) {
+                throw new Error('Al menos una de las tasas de arribos (λ₁ o λ₂) debe ser mayor que 0');
+            }
+            if (!mu || mu <= 0) {
+                throw new Error('La tasa de servicio (μ) es obligatoria y debe ser mayor que 0');
+            }
+
+            const rhoTotal = (lambda1 + lambda2) / mu;
+            if (rhoTotal >= 1) {
+                throw new Error('El sistema es inestable: (λ₁ + λ₂) debe ser menor que μ');
+            }
+        } else if (model !== 'mm2') {
+            // Validaciones para otros modelos
+            if (!inputs.lambda || inputs.lambda <= 0) {
+                throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
+            }
+            if (!inputs.mu || inputs.mu <= 0) {
+                throw new Error('La tasa de servicio (μ) es obligatoria y debe ser mayor que 0');
+            }
+            if (model === 'mm1n' && (!inputs.N || inputs.N <= 0)) {
+                throw new Error('La capacidad máxima (N) es obligatoria y debe ser mayor que 0');
+            }
+        } else if (model === 'mm2') {
+            // Validación extra para mm2
+            if (!['standard', 'evaluate-third'].includes(inputs.calculationType)) {
+                throw new Error('Por favor seleccione un tipo de cálculo válido.');
+            }
+            if (!inputs.lambda || !inputs.mu1 || !inputs.mu2) {
+                throw new Error('Debe completar λ, μ1 y μ2');
+            }
+        }
+
+        // Cálculo por modelo
+        let results;
+        switch (model) {
+            case 'mm1':
+                results = QueueCalculations.calculateMM1Updated(inputs);
+                break;
+            case 'mm2':
+                results = QueueCalculations.calculateMM2(inputs);
+                break;
+            case 'mm1n':
+                results = QueueCalculations.calculateMM1N(inputs);
+                break;
+            case 'mg1':
+                results = QueueCalculations.calculateMG1(inputs);
+                break;
+            case 'md1':
+                results = QueueCalculations.calculateMD1(inputs);
+                break;
+            case 'priority':
+                results = QueueCalculations.calculateMM1PriorityPR({
+                    lambda1: inputs.lambda1 || 0,
+                    lambda2: inputs.lambda2 || 0,
+                    mu: inputs.mu
+                });
+                break;
+            default:
+                throw new Error('Modelo no reconocido');
+        }
+
+        this.displayResults(model, results); // Muestra los resultados
+        this.hideError(model);               // Oculta errores previos
+    } catch (error) {
+        this.showError(model, error.message); // Muestra el error
+        this.hideResults(model);              // Oculta resultados previos
     }
+}
+
     
 
     displayResults(model, results) {
