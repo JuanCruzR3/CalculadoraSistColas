@@ -590,6 +590,53 @@ body.dark .converter-result {
     color: var(--color-teal-300);
 }
 
+/* Calculation notes */
+.calculation-note {
+    background-color: var(--color-teal-50);
+    border: 1px solid var(--color-teal-200);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+}
+
+.calculation-note p {
+    margin-bottom: 0.5rem;
+}
+
+.calculation-note p:last-child {
+    margin-bottom: 0;
+}
+
+body.dark .calculation-note {
+    background-color: var(--color-gray-700);
+    border-color: var(--color-gray-600);
+}
+
+/* Select styling */
+.input-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-gray-300);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: var(--transition-colors);
+    background-color: var(--color-white);
+    color: var(--color-gray-900);
+}
+
+.input-group select:focus {
+    outline: none;
+    border-color: var(--color-teal-500);
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+}
+
+body.dark .input-group select {
+    border-color: var(--color-gray-600);
+    background-color: var(--color-gray-700);
+    color: var(--color-white);
+}
+
 .form-card.full-width {
     grid-column: span 2;
 }

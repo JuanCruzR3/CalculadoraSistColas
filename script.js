@@ -398,6 +398,61 @@ class CalculatorManager {
         this.bindEvents(); // Asocia eventos a los formularios
         this.bindNavClear(); // Limpia formularios y resultados al cambiar de pestaña 
         this.initTimeConverters(); // Inicializa los conversores de tiempo
+        this.initMM2CalculationType(); // Inicializa el selector de tipo de cálculo M/M/2
+    }
+
+    // Inicializa el selector de tipo de cálculo para M/M/2
+    initMM2CalculationType() {
+        const calculationTypeSelect = document.getElementById('mm2-calculation-type');
+        if (calculationTypeSelect) {
+            calculationTypeSelect.addEventListener('change', (e) => {
+                this.toggleMM2CalculationType(e.target.value);
+            });
+        }
+    }
+
+    // Cambia los campos visibles según el tipo de cálculo M/M/2
+    toggleMM2CalculationType(type) {
+        const standardNote = document.getElementById('mm2-standard-note');
+        const thirdServerNote = document.getElementById('mm2-third-server-note');
+        const mu1Group = document.getElementById('mm2-mu1-group');
+        const mu2Group = document.getElementById('mm2-mu2-group');
+        const muActualGroup = document.getElementById('mm2-mu-actual-group');
+        const mu3Group = document.getElementById('mm2-mu3-group');
+        
+        // Limpiar campos al cambiar tipo
+        document.getElementById('mm2-mu1').value = '';
+        document.getElementById('mm2-mu2').value = '';
+        document.getElementById('mm2-mu-actual').value = '';
+        document.getElementById('mm2-mu3').value = '';
+        
+        if (type === 'evaluate-third') {
+            // Mostrar campos para evaluación de tercer servidor
+            standardNote.style.display = 'none';
+            thirdServerNote.style.display = 'block';
+            mu1Group.style.display = 'none';
+            mu2Group.style.display = 'none';
+            muActualGroup.style.display = 'block';
+            mu3Group.style.display = 'block';
+            
+            // Cambiar etiquetas y hacer campos requeridos
+            document.getElementById('mm2-mu-actual').required = true;
+            document.getElementById('mm2-mu1').required = false;
+            document.getElementById('mm2-mu2').required = false;
+        } else {
+            // Mostrar campos estándar M/M/2
+            standardNote.style.display = 'block';
+            thirdServerNote.style.display = 'none';
+            mu1Group.style.display = 'block';
+            mu2Group.style.display = 'block';
+            muActualGroup.style.display = 'none';
+            mu3Group.style.display = 'none';
+            
+            // Restaurar campos requeridos
+            document.getElementById('mm2-mu1').required = true;
+            document.getElementById('mm2-mu2').required = true;
+            document.getElementById('mm2-mu-actual').required = false;
+        }
     }
 
     // Inicializa los conversores de tiempo para todos los modelos
@@ -554,19 +609,29 @@ class CalculatorManager {
                 if (rhoTotal >= 1) {
                     throw new Error('El sistema es inestable: (λ₁ + λ₂) debe ser menor que μ');
                 }
+            } else if (model === 'mm2') {
+                const calculationType = inputs.calculationType || 'standard';
+                
+                if (!inputs.lambda || inputs.lambda <= 0) {
+                    throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
+                }
+                
+                if (calculationType === 'evaluate-third') {
+                    if (!inputs.muActual || inputs.muActual <= 0) {
+                        throw new Error('μ actual es obligatorio y debe ser mayor que 0');
+                    }
+                } else {
+                    if (!inputs.mu1 || inputs.mu1 <= 0 || !inputs.mu2 || inputs.mu2 <= 0) {
+                        throw new Error('Los tiempos de servicio μ1 y μ2 son obligatorios y deben ser mayores que 0');
+                    }
+                }
             } else {
                 // Modelos existentes
                 if (!inputs.lambda || inputs.lambda <= 0) {
                     throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
                 }
-                if (model !== 'mm2' && (!inputs.mu || inputs.mu <= 0)) {
+                if (!inputs.mu || inputs.mu <= 0) {
                     throw new Error('El tiempo de servicio (μ) es obligatorio y debe ser mayor que 0');
-                }
-                if (model === 'mm2' && (
-                    !inputs.mu1 || inputs.mu1 <= 0 ||
-                    !inputs.mu2 || inputs.mu2 <= 0
-                )) {
-                    throw new Error('Los tiempos de servicio μ1 y μ2 son obligatorios y deben ser mayores que 0');
                 }
                 if (model === 'mm1n' && (!inputs.N || inputs.N <= 0)) {
                     throw new Error('La capacidad máxima (N) es obligatoria y debe ser mayor que 0');
@@ -600,7 +665,12 @@ class CalculatorManager {
                     results = QueueCalculations.calculateMM1Updated(inputs);
                     break;
                 case 'mm2':
-                    results = QueueCalculations.calculateMM2Updated(inputs);
+                    const calculationType = inputs.calculationType || 'standard';
+                    if (calculationType === 'evaluate-third') {
+                        results = QueueCalculations.evaluateThirdServer(inputs);
+                    } else {
+                        results = QueueCalculations.calculateMM2Updated(inputs);
+                    }
                     break;
                 case 'mm1n':
                     results = QueueCalculations.calculateMM1N(inputs);
