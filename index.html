@@ -476,16 +476,21 @@
                                 
                                 <div id="mm2-third-server-note" class="calculation-note" style="display: none;">
                                     <p><strong>💡 Importante:</strong> Usar siempre la misma unidad de tiempo para λ y μ (por minuto, por hora, etc.). Los tiempos de espera se expresan en esa misma unidad.</p>
-                                <div id="mm2-mu1-group" class="input-group">
                                 </div>
 
                                 <div class="input-group">
                                     <label>Tasa de arribos (λ)*</label>
-                                <div id="mm2-mu2-group" class="input-group">
+                                    <input type="number" name="lambda" step="any" min="0" placeholder="Ingrese la tasa de arribos" required>
                                 </div>
                                 <div class="input-group">
                                     <label>Tiempo de servicio 1 (igual o más rápido - μ1)*</label>
                                     <input type="number" name="mu1" step="any" min="0" placeholder="Ingrese el tiempo de servicio 1" required>
+                                </div>
+                                <div class="input-group">
+                                    <label>Tiempo de servicio 2 (igual o más lento - μ2)*</label>
+                                    <input type="number" name="mu2" step="any" min="0" placeholder="Ingrese el tiempo de servicio 2" required>
+                                </div>
+                                
                                 <div id="mm2-mu-actual-group" class="input-group" style="display: none;">
                                     <label for="mm2-mu-actual">μ actual*</label>
                                     <input type="number" id="mm2-mu-actual" name="muActual" step="any" min="0" placeholder="Ingrese μ actual">
@@ -496,11 +501,6 @@
                                     <input type="number" id="mm2-mu3" name="mu3" step="any" min="0" placeholder="Ingrese μ del tercer servidor">
                                 </div>
 
-                                </div>
-                                <div class="input-group">
-                                    <label>Tiempo de servicio 2 (igual o más lento - μ2)*</label>
-                                    <input type="number" name="mu2" step="any" min="0" placeholder="Ingrese el tiempo de servicio 2" required>
-                                </div>
                                 <div class="error-message" id="mm2-error"></div>
                                 <button type="submit" class="calculate-btn">Calcular</button>
                             </form>
