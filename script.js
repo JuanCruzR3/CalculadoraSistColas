@@ -166,6 +166,8 @@ class QueueCalculations {
                 let PnValue;
                 if (n === 0) {
                     PnValue = P0;
+                } else if (n === 1) {
+                    PnValue = rho * P0;
                 } else {
                     PnValue = Math.pow(rho, n) * P0;
                 }
