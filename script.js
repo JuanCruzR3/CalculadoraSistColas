@@ -555,8 +555,6 @@ class CalculatorManager {
                     throw new Error('El sistema es inestable: (λ₁ + λ₂) debe ser menor que μ');
                 }
             } else if (model === 'mm2') {
-                const calculationType = inputs.calculationType || 'standard';
-                
                 if (!inputs.lambda || inputs.lambda <= 0) {
                     throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
                 }
