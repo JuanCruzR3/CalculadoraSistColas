@@ -148,32 +148,66 @@ class QueueCalculations {
             throw new Error('El sistema es inestable: λ debe ser menor que μ1 + μ2');
         }
         
+        // Para M/M/2, rho es la utilización total del sistema
         const rho = lambda / muSum;
         
-        // Cálculo correcto para M/M/2
-        const P0 = 1 / (1 + rho + (rho * rho) / (2 * (1 - rho)));
-        const Lq = (rho * rho * rho) / (2 * (1 - rho) * (1 + rho + (rho * rho) / (2 * (1 - rho))));
-        const L = Lq + rho;
-        const Wq = Lq / lambda;
-        const W = L / lambda;
+        // Cálculo correcto de P0 para M/M/2
+        const rho1 = lambda / mu1;
+        const rho2 = lambda / mu2;
         
-        let results = { rho, P0, L, Lq, W, Wq };
-        
-        // Calcular Pn si se proporciona
-        if (pn !== undefined && pn !== null && pn !== '') {
-            const n = parseInt(pn, 10);
-            if (!isNaN(n) && n >= 0) {
-                let PnValue;
-                if (n === 0) {
-                    PnValue = P0;
-                } else {
-                    PnValue = Math.pow(rho, n) * P0;
+        // Si los servidores son idénticos (caso común)
+        if (mu1 === mu2) {
+            const mu = mu1; // Tasa de servicio de cada servidor
+            const rhoServer = lambda / mu; // Utilización por servidor
+            
+            // Fórmulas estándar para M/M/2 con servidores idénticos
+            const P0 = 1 / (1 + rhoServer + (rhoServer * rhoServer) / (2 * (1 - rho)));
+            const Lq = (Math.pow(rho, 3)) / (2 * (1 - rho)) * P0;
+            const L = Lq + rho;
+            const Wq = Lq / lambda;
+            const W = L / lambda;
+            
+            let results = { rho, P0, L, Lq, W, Wq };
+            
+            // Calcular Pn si se proporciona
+            if (pn !== undefined && pn !== null && pn !== '') {
+                const n = parseInt(pn, 10);
+                if (!isNaN(n) && n >= 0) {
+                    let PnValue;
+                    if (n === 0) {
+                        PnValue = P0;
+                    } else if (n === 1) {
+                        PnValue = rhoServer * P0;
+                    } else {
+                        PnValue = Math.pow(rhoServer, Math.min(n, 2)) * Math.pow(rho, Math.max(0, n - 2)) * P0 / Math.pow(2, Math.max(0, n - 2));
+                    }
+                    results.PnValue = PnValue;
                 }
-                results.PnValue = PnValue;
             }
+            
+            return results;
+        } else {
+            // Caso general para servidores con diferentes tasas
+            // Aproximación usando servidor equivalente
+            const P0 = (1 - rho) / (1 + rho);
+            const Lq = (rho * rho * rho) / (2 * (1 - rho * rho));
+            const L = Lq + rho;
+            const Wq = Lq / lambda;
+            const W = L / lambda;
+            
+            let results = { rho, P0, L, Lq, W, Wq };
+            
+            // Calcular Pn si se proporciona
+            if (pn !== undefined && pn !== null && pn !== '') {
+                const n = parseInt(pn, 10);
+                if (!isNaN(n) && n >= 0) {
+                    const PnValue = Math.pow(rho, n) * P0;
+                    results.PnValue = PnValue;
+                }
+            }
+            
+            return results;
         }
-        
-        return results;
     }
 
     // Modelo M/M/1/N (capacidad finita)
