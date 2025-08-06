@@ -312,11 +312,29 @@ class QueueCalculations {
 
     // Modelo M/D/1 (servicio determinístico)
     static calculateMD1({ lambda, mu, pax, pn }) {
-        if (lambda >= mu) {
+        // Validar que λ esté presente
+        if (!lambda || lambda <= 0) {
+            throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
+        }
+
+        // Determinar μ basado en los inputs disponibles
+        let muValue;
+        if (mu && mu > 0) {
+            // Si μ está presente, usarlo directamente
+            muValue = mu;
+        } else if (sigma && sigma > 0) {
+            // Si E(s) está presente, μ = 1/E(s)
+            muValue = 1 / sigma;
+        } else {
+            throw new Error('Debe proporcionar μ (tasa de servicio) o E(s) (tiempo esperado de servicio)');
+        }
+
+        // Validar estabilidad
+        if (lambda >= muValue) {
             throw new Error('El sistema es inestable: λ debe ser menor que μ');
         }
        
-        const rho = lambda / mu;
+        const rho = lambda / muValue;
         const P0 = 1 - rho;
        
         const Lq = (rho * rho) / (2 * (1 - rho));
@@ -331,7 +349,7 @@ class QueueCalculations {
        const Et = W;
        
        // E(s) = tiempo esperado de servicio = 1/μ
-       const Es = 1 / mu;
+       const Es = 1 / muValue;
        
        let results = { rho, P0, L, Lq, W, Wq, En, Et, Es };
 
