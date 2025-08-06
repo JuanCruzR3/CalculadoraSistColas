@@ -149,18 +149,13 @@ class QueueCalculations {
         }
         
         const rho = lambda / muSum;
-        const rho1 = lambda / mu1;
-        const rho2 = lambda / mu2;
         
-        // Probabilidades de estado
-        const P0 = 1 / (1 + rho1 + (rho1 * rho2) / (1 - rho));
-        const P1 = rho1 * P0;
-        
-        // Métricas del sistema
-        const L = rho1 * P0 / (1 - rho) + rho;
-        const Lq = L - (lambda / muSum) * (1 - P0);
-        const W = L / lambda;
+        // Cálculo correcto para M/M/2
+        const P0 = 1 / (1 + rho + (rho * rho) / (2 * (1 - rho)));
+        const Lq = (rho * rho * rho) / (2 * (1 - rho) * (1 + rho + (rho * rho) / (2 * (1 - rho))));
+        const L = Lq + rho;
         const Wq = Lq / lambda;
+        const W = L / lambda;
         
         let results = { rho, P0, L, Lq, W, Wq };
         
@@ -171,10 +166,8 @@ class QueueCalculations {
                 let PnValue;
                 if (n === 0) {
                     PnValue = P0;
-                } else if (n === 1) {
-                    PnValue = P1;
                 } else {
-                    PnValue = rho1 * P0 * Math.pow(rho, n - 1);
+                    PnValue = Math.pow(rho, n) * P0;
                 }
                 results.PnValue = PnValue;
             }
@@ -548,8 +541,11 @@ class CalculatorManager {
                     throw new Error('La tasa de arribos (λ) es obligatoria y debe ser mayor que 0');
                 }
                 
-                if (!inputs.mu1 || inputs.mu1 <= 0 || !inputs.mu2 || inputs.mu2 <= 0) {
-                    throw new Error('Los tiempos de servicio μ1 y μ2 son obligatorios y deben ser mayores que 0');
+                if (!inputs.mu1 || inputs.mu1 <= 0) {
+                    throw new Error('El tiempo de servicio μ1 es obligatorio y debe ser mayor que 0');
+                }
+                if (!inputs.mu2 || inputs.mu2 <= 0) {
+                    throw new Error('El tiempo de servicio μ2 es obligatorio y debe ser mayor que 0');
                 }
             } else {
                 // Modelos existentes
